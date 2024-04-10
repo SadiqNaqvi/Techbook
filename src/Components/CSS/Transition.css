@@ -1,0 +1,157 @@
+.notification-enter {
+    transform: translateY(-100px);
+}
+
+.notification-enter-active {
+    transform: translateY(5px);
+    transition: all 300ms ease;
+}
+
+.notification-enter-done,
+.notification-exit {
+    transform: translateY(0px);
+}
+
+.notification-exit-active {
+    transform: translateY(-100px);
+    transition: all 300ms ease;
+}
+
+.notification-exit-done {
+    transform: translateY(-100px);
+}
+
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transition: opacity 500ms ease;
+}
+
+.fade-enter-done,
+.fade-exit {
+    opacity: 1;
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transition: opacity 500ms ease;
+}
+
+.fade-exit-done {
+    opacity: 0;
+}
+
+.slideDown-enter {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+
+.slideDown-enter-active {
+    opacity: 1;
+    transform: translateY(0px);
+    transition: all 500ms ease;
+}
+
+.slideDown-enter-done,
+.slideDown-exit {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.slideDown-exit-active {
+    opacity: 0;
+    transform: translateY(-30px);
+    transition: all 500ms ease;
+}
+
+.slideDown-exit-done {
+    opacity: 0;
+    transform: translateY(-30px);
+}
+
+.slideUp-enter {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.slideUp-enter-active {
+    opacity: 1;
+    transform: translateY(0px);
+    transition: all 500ms ease;
+}
+
+.slideUp-enter-done,
+.slideUp-exit {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.slideUp-exit-active {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 500ms ease;
+}
+
+.slideUp-exit-done {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.zoomIn-enter {
+    transform: scale(0);
+    opacity: 0;
+}
+
+.zoomIn-enter-active {
+    transform: scale(1);
+    opacity: 1;
+    transition: all 500ms ease;
+}
+
+.zoomIn-enter-done,
+.zoomIn-exit {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.zoomIn-exit-active {
+    transform: scale(0);
+    opacity: 0;
+    transition: all 500ms ease;
+}
+
+.zoomIn-exit-done {
+    transform: scale(0);
+    opacity: 0;
+}
+
+.slideRight-enter {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+.slideRight-enter-active {
+    opacity: 1;
+    transform: translateX(0px);
+    transition: all 500ms ease;
+}
+
+.slideRight-enter-done,
+.slideRight-exit {
+    opacity: 1;
+    transform: translateX(0px);
+}
+
+.slideRight-exit-active {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 500ms ease;
+}
+
+.slideRight-exit-done {
+    opacity: 0;
+    transform: translateX(30px);
+}

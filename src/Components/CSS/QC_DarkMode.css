@@ -1,0 +1,133 @@
+#qc_themeToggleCont {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+#qc_themeToggleLeft,
+#qc_themeToggleRight {
+    height: 100%;
+    width: 50%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+#qc_themeToggleLTop,
+#qc_themeToggleRTop {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#qc_themeToggleLBottom,
+#qc_themeToggleRBottom {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#qc_themeToggleLBottom svg,
+#qc_themeToggleRBottom svg {
+    height: 20px;
+    width: 20px;
+}
+
+.qc_themeDeviceCont {
+    height: 60%;
+    width: 80%;
+    border: 4px solid gray;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+}
+
+.qc_themeDeviceCont#light {
+    background-color: rgb(237, 237, 255);
+}
+
+.qc_themeDeviceCont#dark {
+    background-color: #181820;
+}
+
+.qc_themeDeviceContTop,
+.qc_themeDeviceContBottom {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.qc_themeDeviceContTLeft,
+.qc_themeDeviceContBLeft {
+    height: 100%;
+    width: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qc_themeDeviceContTRight,
+.qc_themeDeviceContBRight {
+    height: 80%;
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.qc_themeDeviceBall {
+    height: 50%;
+    aspect-ratio: 1;
+    border-radius: 100%;
+    background-color: gray;
+}
+
+.qc_themeDeviceLine {
+    width: 80%;
+    height: 5px;
+    border-radius: 20px;
+    background-color: gray;
+}
+
+@media screen and (width <=1024px) {
+
+    .qc_themeDeviceContTLeft,
+    .qc_themeDeviceContBLeft {
+        width: 30%;
+    }
+
+    .qc_themeDeviceContTRight,
+    .qc_themeDeviceContBRight {
+        width: 70%;
+    }
+}
+
+@media screen and (width <=800px) {
+    .qc_themeDeviceBall {
+        width: 70%;
+        height: fit-content;
+    }
+}
+
+@media screen and (width <=375px) {
+
+    .qc_themeDeviceContTLeft,
+    .qc_themeDeviceContBLeft {
+        width: 35%;
+    }
+
+    .qc_themeDeviceContTRight,
+    .qc_themeDeviceContBRight {
+        width: 65%;
+        height: 60%;
+    }
+
+    .qc_themeDeviceLine {
+        height: 4px;
+    }
+}

@@ -1,0 +1,70 @@
+.qc_tb_taskTile {
+    height: 50px;
+    width: calc(33% - 3px);
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--gray20);
+    border-radius: 6px;
+    transition: all 300ms ease-in-out;
+}
+
+.lightmode .qc_tb_taskTile:hover {
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 1px 3px 1px rgba(60, 64, 67, 0.149);
+}
+
+.darkmode .qc_tb_taskTile:hover {
+    background-color: rgba(128, 128, 128, 0.05);
+    border-color: var(--gray40);
+}
+
+.qc_tb_taskTile_left,
+.qc_tb_taskTile_right {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+}
+
+.qc_tb_taskTile_middle {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+    color: gray;
+}
+
+.qc_tb_taskTile:hover .qc_tb_taskTile_middle {
+    color: var(--secondary);
+}
+
+.qc_tb_taskTile_middle a {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.qc_tb_taskTile_middle a:hover {
+    text-decoration: underline;
+}
+
+.qc_tb_taskTileBtns {
+    opacity: 0;
+    transition: opacity 500ms ease;
+}
+
+.qc_tb_taskTile:hover .qc_tb_taskTileBtns {
+    opacity: 1;
+}
+
+.qc_tb_taskTileBtns svg {
+    height: 20px;
+    width: 20px;
+    color: var(--secondary);
+}
+
+.qc_tb_taskTileDeleteBtn svg {
+    color: rgb(255, 45, 45);
+}

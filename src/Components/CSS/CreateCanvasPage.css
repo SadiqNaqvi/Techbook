@@ -1,0 +1,412 @@
+#qc_tb_createCanvasPage {
+    height: 100%;
+    width: 100%;
+}
+
+/* CSS for Name and background container */
+
+#qc_tb_createcanvasPage_canvasNameandBgCont {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    backdrop-filter: brightness(0.5);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#qc_tb_canvasNameandBgCont {
+    height: 70%;
+    width: 60%;
+    padding: 15px;
+    background-color: var(--contColor);
+    border-radius: 6px;
+}
+
+#qc_tb_canvasNameandBgCont_head {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#qc_tb_canvasNameandBgCont_headLeft,
+#qc_tb_canvasNameandBgCont_headRight {
+    width: 10%;
+}
+
+#qc_tb_canvasNameandBgCont_headMiddle {
+    width: 80%;
+    display: flex;
+}
+
+#qc_tb_canvasNameandBgCont_headMiddle input {
+    margin: auto;
+}
+
+#qc_tb_canvasNameandBgCont_body {
+    height: calc(100% - 100px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+#qc_tb_canvasNameandBgCont_body>h4 {
+    text-align: center;
+    color: var(--primarylight);
+    line-height: 1.5;
+}
+
+#canvasBackgroundBoxes {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.canvasBackgroundBox {
+    height: 200px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 1px solid var(--gray80);
+    color: var(--gray80);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 300ms ease-in-out;
+    position: relative;
+}
+
+.canvasBackgroundBox input {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.canvasBackgroundBox:not(.active):hover {
+    box-shadow: 1px 1px 4px black;
+    color: var(--primarydark);
+}
+
+.canvasBackgroundBox.active {
+    border-color: var(--secondary);
+    color: var(--secondary);
+}
+
+.canvasBackgroundBox svg {
+    height: 80px;
+    aspect-ratio: 1;
+}
+
+#qc_tb_canvasNameandBgCont_foot {
+    height: 50px;
+    width: 100%;
+}
+
+#qc_tb_canvasNameandBgCont_foot button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 18px;
+    margin: 0 auto;
+}
+
+#canvasInfoSaveBtn {
+    background-color: var(--secondary);
+    color: var(--primarydark);
+    cursor: pointer;
+}
+
+#canvasInfoSave_disable {
+    border: 1px solid var(--gray80);
+    color: var(--gray80);
+    cursor: not-allowed;
+}
+
+#qc_tb_createCanvasPage_body {
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#qc_tb_canvasAndPropsContainer {
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.cursor-draw {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="26" stroke-width="16" stroke="black" fill="white" viewBox="0 0 576 512"><path d="M559.6 16.4c21.9 21.9 21.9 57.3 0 79.2L306.9 348.3l-79.2-79.2L480.4 16.4c21.9-21.9 57.3-21.9 79.2 0zM205.1 291.7l79.2 79.2-.1 .1c2.5 9.3 3.8 19 3.8 29c0 61.9-50.1 112-112 112H32c-17.7 0-32-14.3-32-32s14.3-32 32-32h4.8c17.6 0 29.6-18.9 27.8-36.4c-.4-3.8-.6-7.7-.6-11.6c0-61.9 50.1-112 112-112c10 0 19.8 1.3 29 3.8l.1-.1z"></path></svg>') -16 32, auto !important
+}
+
+.cursor-erase {
+    cursor: url('data:image/svg+xml;utf8,<svg height="26" stroke-width="6" stroke="black" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M502.6 9.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128-15.8-15.8c-15.2-15.2-38.5-18.4-57.3-8l-32.5 18L380.4 288.1l18-32.5c10.4-18.7 7.1-42.1-8-57.3l-15.8-15.8 128-128c12.5-12.5 12.5-32.8 0-45.3zM187.5 151.8L16.4 246.9C6.3 252.5 0 263.2 0 274.8c0 8.5 3.4 16.6 9.3 22.6l43.2 43.2c2.1 2.1 5.3 2.9 8.2 1.9l52.1-17.4c6.3-2.1 12.2 3.9 10.1 10.1l-17.4 52.1c-1 2.9-.2 6 1.9 8.2L214.7 502.7c6 6 14.1 9.3 22.6 9.3c11.6 0 22.3-6.3 27.9-16.4l95.1-171.1L187.5 151.8z"></path></svg>') -16 28, auto !important;
+}
+
+.canvasProp {
+    position: absolute;
+    padding: 2px;
+    z-index: 1;
+    border: 1px dashed transparent;
+}
+
+.move .canvasProp {
+    z-index: 3;
+}
+
+.canvasProp.selectedProp {
+    z-index: 4;
+    border-color: var(--secondary);
+    transition: all 300ms ease;
+}
+
+.selectedPropInner {
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    transform: rotate(var(--rotate));
+}
+
+.selectedProp:not(.sliding) .selectedPropInner {
+    cursor: move;
+}
+
+.selectedProp.sliding .selectedPropInner {
+    cursor: none !important;
+}
+
+.canvasProp:not(.textProp) .selectedPropInner {
+    filter: drop-shadow(var(--shadowX) var(--shadowY) var(--shadowBlur) var(--shadowColor));
+}
+
+.iconProp .selectedPropInner>svg {
+    height: 100%;
+    width: 100%;
+}
+
+.selectedPropInner>svg {
+    fill: var(--propColor);
+}
+
+.textProp {
+    min-height: 20px;
+    min-width: 40px;
+}
+
+.textProp .selectedPropInner {
+    min-height: 20px;
+    text-shadow: var(--shadowX) var(--shadowY) var(--shadowBlur) var(--shadowColor), var(--shadowX) var(--shadowY) calc(var(--shadowBlur)*2) var(--shadowColor), var(--shadowX) var(--shadowY) calc(var(--shadowBlur)*3) var(--shadowColor);
+}
+
+.textProp .selectedPropInner>p {
+    min-height: 20px;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+    text-decoration-thickness: 0.05em !important;
+}
+
+.selectedPropInner>p {
+    color: var(--propColor);
+}
+
+.textProp .selectedPropInner :not(p):where(*) {
+    height: 0;
+    width: 0;
+    display: none;
+}
+
+.imageProp .selectedPropInner>img {
+    filter: blur(var(--imgBlur)) brightness(var(--imgBrightness)) opacity(var(--imgOpacity)) hue-rotate(var(--imgHue)) saturate(var(--imgSaturate)) contrast(var(--imgContrast)) sepia(var(--imgSepia)) invert(var(--imgInvert));
+}
+
+.selectedProp .selectedPropResizer {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    padding: 6px;
+    cursor: se-resize;
+    background-color: var(--secondary);
+    border-radius: 4px;
+    z-index: 4;
+}
+
+.selectedProp.sliding .selectedPropResizer {
+    opacity: 0;
+}
+
+.selectedProp .selectedPropOptions {
+    position: absolute;
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #d2d2d2a6;
+    color: var(--primarydark);
+    z-index: 4;
+}
+
+.selectedProp:where(.sliding, .resizing) .selectedPropOptions {
+    opacity: 0;
+}
+
+.selectedProp .selectedPropOptions:hover {
+    background-color: var(--primarydark);
+    color: var(--accent);
+}
+
+.selectedProp .selectedPropEdit {
+    top: -12px;
+    right: -12px;
+}
+
+.shapeProp .selectedPropInner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shapeProp .selectedPropInner>div {
+    height: 98%;
+    width: 98%;
+    background-color: var(--propColor);
+}
+
+.selectedProp .selectedPropDelete {
+    top: -12px;
+    left: -12px;
+}
+
+.selectedProp .selectedPropClone {
+    bottom: -12px;
+    left: -12px;
+}
+
+.selectedPropOptions :where(svg, input) {
+    display: none;
+}
+
+.selectedProp .selectedPropOptions svg {
+    height: 16px;
+    width: 16px;
+    display: block;
+}
+
+.selectedProp .selectedPropColorChange input {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+
+#qc_tb_canvas {
+    position: relative;
+    z-index: 2;
+}
+
+#qc_tb_canvasContainer {
+    height: 100%;
+    width: 100%;
+}
+
+.draw #qc_tb_canvasContainer::before {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    border: 1px solid;
+    height: var(--height);
+    width: var(--width);
+    top: var(--top);
+    left: var(--left);
+    border-color: var(--borderColor);
+    border-radius: 25px;
+}
+
+.hollowSharpSquareShape {
+    clip-path: polygon(95% 5%, 95% 95%, 5% 95%, 5% 5%, 0 5%, 0 100%, 100% 100%, 100% 0, 0 0, 0 5%);
+}
+
+.fillSharpSquareShape {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.fillSquareShape {
+    clip-path: inset(0 0 0 0 round 10px 10px 10px 10px);
+}
+
+.shallowSharpTriangleShape {
+    clip-path: polygon(0% 100%, 3.574% 93.333%, 46.406% 13.375%, 50% 6.667%, 53.594% 13.375%, 96.426% 93.333%, 100% 100%, 92.793% 100%, 7.207% 100%, 0% 100%, 50% 20.104%, 10.762% 93.333%, 89.238% 93.333%, 50% 20.104%);
+}
+
+.fillSharpTriangleShape {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.shallowCircleShape {
+    clip-path: polygon(50% 6.25%, 50% 6.25%, 57.093% 6.823%, 63.822% 8.482%, 70.099% 11.136%, 75.831% 14.696%, 80.93% 19.07%, 85.304% 24.169%, 88.864% 29.901%, 91.518% 36.178%, 93.177% 42.907%, 93.75% 50%, 93.75% 50%, 93.177% 57.093%, 91.518% 63.822%, 88.864% 70.099%, 85.304% 75.831%, 80.93% 80.93%, 75.831% 85.304%, 70.099% 88.864%, 63.822% 91.518%, 57.093% 93.177%, 50% 93.75%, 50% 93.75%, 42.907% 93.177%, 36.178% 91.518%, 29.901% 88.864%, 24.169% 85.304%, 19.07% 80.93%, 14.696% 75.831%, 11.136% 70.099%, 8.482% 63.822%, 6.823% 57.093%, 6.25% 50%, 6.25% 50%, 6.823% 42.907%, 8.482% 36.178%, 11.136% 29.901%, 14.696% 24.169%, 19.07% 19.07%, 24.169% 14.696%, 29.901% 11.136%, 36.178% 8.482%, 42.907% 6.823%, 50% 6.25%, 50% 100%, 58.106% 99.345%, 65.797% 97.449%, 72.97% 94.416%, 79.521% 90.348%, 85.348% 85.348%, 90.348% 79.521%, 94.416% 72.97%, 97.449% 65.797%, 99.345% 58.106%, 100% 50%, 100% 50%, 99.345% 41.894%, 97.449% 34.203%, 94.416% 27.03%, 90.348% 20.479%, 85.348% 14.652%, 79.521% 9.652%, 72.97% 5.584%, 65.797% 2.551%, 58.106% 0.655%, 50% 0%, 50% 0%, 41.894% 0.655%, 34.203% 2.551%, 27.03% 5.584%, 20.479% 9.652%, 14.652% 14.652%, 9.652% 20.479%, 5.584% 27.03%, 2.551% 34.203%, 0.655% 41.894%, 0% 50%, 0% 50%, 0.655% 58.106%, 2.551% 65.797%, 5.584% 72.97%, 9.652% 79.521%, 14.652% 85.348%, 20.479% 90.348%, 27.03% 94.416%, 34.203% 97.449%, 41.894% 99.345%, 50% 100%, 50% 100%);
+}
+
+.fillCircleShape {
+    clip-path: ellipse(50% 50% at 50%);
+}
+
+.fillHalfCircleShape {
+    clip-path: ellipse(50% 50% at 50% 100%);
+}
+
+.hexagonShape {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.octagonShape {
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+@media screen and (width <=1024px) {
+    #qc_tb_canvasNameandBgCont {
+        width: 70%;
+    }
+}
+
+@media screen and (width <=768px) {
+    #qc_tb_canvasNameandBgCont {
+        width: 80%;
+    }
+}
+
+@media screen and (width <=600px) {
+    #qc_tb_canvasNameandBgCont {
+        width: 90%;
+        height: 80%;
+    }
+
+    #canvasBackgroundBoxes {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .canvasBackgroundBox {
+        height: 100px;
+        width: 200px;
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .canvasBackgroundBox svg {
+        height: 30px;
+    }
+}

@@ -1,0 +1,109 @@
+.qc_tb_notesCard {
+    display: flex;
+    flex-direction: column;
+    width: calc(25% - 8px);
+    aspect-ratio: 1.06;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 6px;
+    padding: 10px;
+    padding-bottom: 0;
+    color: gray;
+    position: relative;
+    border: 1px solid var(--gray20);
+    transition: all 300ms ease-in-out;
+}
+
+.lightmode .qc_tb_notesCard:hover {
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.302), 0 1px 3px 1px rgba(60, 64, 67, 0.149);
+}
+
+.darkmode .qc_tb_notesCard:hover {
+    border-color: var(--gray40);
+    background-color: rgba(128, 128, 128, 0.05);
+}
+
+.qc_tb_notesCard_btns.pinBtn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 1;
+}
+
+.qc_tb_notesCard div {
+    width: 100%;
+}
+
+.qc_tb_notesCard .top {
+    height: 80%;
+    cursor: pointer;
+    padding-bottom: 10px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--gray20);
+    position: relative;
+}
+
+.qc_tb_notesCard_detailShow {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.qc_tb_notesCard .bottom {
+    display: flex;
+    height: 20%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.qc_tb_notesCard .bottom a {
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 400;
+    max-width: 75%;
+    color: gray;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.qc_tb_notesCard:hover .bottom a {
+    color: var(--secondary);
+}
+
+.qc_tb_notesCard .bottom a:hover {
+    text-decoration: underline;
+}
+
+.qc_tb_notesCard_btns {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 300ms ease;
+}
+
+.qc_tb_notesCard:hover .qc_tb_notesCard_btns {
+    opacity: 1;
+    transform: translateY(0px);
+}
+
+.qc_tb_notesCard_btns svg {
+    height: 20px;
+    width: 20px;
+    color: var(--secondary);
+    cursor: pointer;
+}
+
+.qc_tb_notesCard_deleteNoteBtn svg {
+    color: var(--warningRed);
+}
+
+@media screen and (width<=425px){
+    .qc_tb_notesCard .top{
+        height: 75%;
+    }
+    .qc_tb_notesCard .bottom{
+        height: 25%;
+    }
+}

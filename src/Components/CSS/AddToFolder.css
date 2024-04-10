@@ -1,0 +1,141 @@
+#qc_tb_addToFolderOuter {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#qc_tb_addToFolderInner {
+    height: 40%;
+    width: 50%;
+    padding: 15px;
+    background-color: #181820;
+    color: gray;
+    border-radius: 6px;
+}
+
+#qc_tb_addToFolderInner.full {
+    height: 80%;
+}
+
+#qc_tb_addToFolderHead,
+#qc_tb_addToFolderFoot {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#qc_tb_addToFolderHead h4 {
+    font-size: 18px;
+    font-weight: 100;
+}
+
+#qc_tb_addToFolderBody {
+    height: 80%;
+    width: 100%;
+    padding-left: 0 !important;
+    overflow-y: auto;
+}
+
+#qc_tb_newFolderInner {
+    height: 40%;
+    width: 40%;
+    padding: 15px;
+    background-color: #181820;
+    color: gray;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#qc_tb_newFolderHead,
+#qc_tb_newFolderFoot {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#qc_tb_newFolderHLeft,
+#qc_tb_newFolderHRight {
+    width: 10%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#qc_tb_newFolderHMiddle {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+}
+
+#qc_tb_newFolderBody .qc_tb_updateFolderTile {
+    cursor: default;
+}
+
+#qc_tb_newFolderFoot {
+    justify-content: center;
+}
+
+@media screen and (width<=1024px) {
+
+    #qc_tb_addToFolderInner,
+    #qc_tb_newFolderInner {
+        width: 60%;
+    }
+}
+
+@media screen and (width<=768px) {
+
+    #qc_tb_addToFolderInner,
+    #qc_tb_newFolderInner {
+        width: 70%;
+    }
+}
+
+@media screen and (width<=600px) {
+
+    #qc_tb_addToFolderInner,
+    #qc_tb_newFolderInner {
+        width: 80%;
+    }
+}
+
+@media screen and (width<=500px) {
+
+    #qc_tb_addToFolderInner,
+    #qc_tb_newFolderInner {
+        width: 90%;
+        padding: 10px;
+    }
+
+    #qc_tb_newFolderInner {
+        height: 50%;
+    }
+
+    #qc_tb_addToFolderInner.full {
+        height: 90%;
+    }
+}
+
+@media screen and (width<=400px) {
+
+    #qc_tb_addToFolderInner.full {
+        height: 95%;
+    }
+
+    #qc_tb_addToFolderBody {
+        height: 70%;
+    }
+
+    #qc_tb_addToFolderFoot {
+        height: 20%;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+}

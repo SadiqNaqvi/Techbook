@@ -1,0 +1,355 @@
+#qc_tb_loginPage {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background-color: var(--primarydark);
+    position: relative;
+}
+
+#qc_tb_loginPage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 65%;
+    background-image: url('../Images/login\ background.jpg');
+    background-size: cover;
+    z-index: 0;
+    opacity: 0.4;
+}
+
+#qc_tb_loginPageLeft {
+    height: 100%;
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#qc_tb_loginPageLeft h2 {
+    font-size: 36px;
+    color: var(--primarylight);
+    z-index: 1;
+}
+
+#qc_tb_loginPageRight {
+    height: 100%;
+    width: 35%;
+    z-index: 1;
+}
+
+#qc_tb_loginPageRight>div {
+    height: 100%;
+    width: 100%;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#qc_tb_loginPageRight a {
+    color: #96f1b5;
+}
+
+#qc_tb_loginPageRight a:hover {
+    text-decoration: underline;
+}
+
+#qc_tb_loginBox {
+    width: 75%;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#qc_tb_loginBox img {
+    height: 36px;
+    aspect-ratio: 1;
+    margin: 0 auto 20px;
+    display: block;
+}
+
+.qc_tb_inputForm {
+    width: 100%;
+    height: 45px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    border: 1px solid var(--gray40);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.qc_tb_inputForm svg {
+    height: 18px;
+    width: 18px;
+    color: var(--gray80);
+}
+
+.qc_tb_inputForm input {
+    height: 100%;
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    color: gray;
+}
+
+#qc_tb_loginHelpBox {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+#qc_tb_loginHelpBox>:where(button, a) {
+    font-size: 14px;
+}
+
+#qc_tb_loginRememberBtn {
+    align-items: center;
+    color: var(--primarylight);
+}
+
+#qc_tb_loginRememberBtn svg {
+    height: 16px;
+    width: 16px;
+    margin-right: 5px;
+}
+
+.qc_tb_loginBtns {
+    font-size: 16px;
+    width: 100%;
+    height: 45px;
+    color: var(--primarylight);
+    border: 1px solid var(--gray40);
+    margin: 10px 0;
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.qc_tb_loginBtns#main {
+    background-color: lightgray;
+    color: var(--primarydark);
+    border: none;
+}
+
+.qc_tb_loginBtns#disable {
+    color: gray;
+    cursor: not-allowed;
+}
+
+.qc_tb_loginBtns svg {
+    height: 18px;
+    aspect-ratio: 1;
+    margin-right: 8px;
+}
+
+.qc_tb_loginBtns img {
+    height: 20px;
+    aspect-ratio: 1;
+    margin-right: 8px;
+}
+
+#qc_tb_loginPageSignupOption {
+    font-size: 16px;
+    margin-top: 10px;
+    justify-content: center;
+    display: flex;
+    color: gray;
+}
+
+#qc_tb_loginPageSignupOption a {
+    margin-left: 5px;
+}
+
+#qc_tb_loginOr {
+    width: 75%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#qc_tb_loginOr span {
+    height: 1px;
+    width: 40%;
+    background-color: gray;
+}
+
+#qc_tb_loginOr p {
+    color: gray;
+}
+
+#qc_tb_loginOptionsBox {
+    width: 75%;
+    margin-top: 20px;
+}
+
+#qc_tb_loginSavedAccountCont {
+    justify-content: space-between !important;
+}
+
+#qc_tb_savedAccountCardsCont {
+    width: 100%;
+    max-height: 90%;
+    overflow-y: auto;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.qc_tb_savedAccountCard {
+    width: 140px;
+    aspect-ratio: 1;
+    background-color: var(--gray20);
+    backdrop-filter: blur(10px);
+    border-radius: 4px;
+    cursor: pointer;
+    color: gray;
+    position: relative;
+}
+
+.qc_tb_savedAccountCard>button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    padding: 2px;
+    border-radius: 4px;
+    transition: background-color 300ms ease-in-out;
+}
+
+.qc_tb_savedAccountCard>button:hover {
+    background-color: var(--gray20);
+}
+
+.qc_tb_savedAccountCard>button>svg {
+    height: 18px;
+    aspect-ratio: 1;
+    color: var(--warningRed);
+}
+
+.qc_tb_savedAccountCardTop {
+    height: 80%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qc_tb_savedAccountCardTop .userAvatar {
+    height: 80%;
+    aspect-ratio: 1;
+    border-radius: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.qc_tb_savedAccountCardTop svg {
+    height: 60%;
+    aspect-ratio: 1;
+}
+
+.qc_tb_savedAccountCardBottom {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qc_tb_savedAccountCard p {
+    max-width: 80%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    font-size: 14px;
+    font-family: 'Comfortaa';
+    margin-bottom: 8px;
+}
+
+@media screen and (max-width: 1000px) {
+
+    #qc_tb_loginPage::before {
+        width: 60%;
+    }
+
+    #qc_tb_loginPageLeft {
+        width: 60%;
+    }
+
+    #qc_tb_loginPageRight {
+        width: 40%;
+    }
+
+}
+
+@media screen and (max-width: 900px) {
+
+    #qc_tb_loginPage::before {
+        width: 55%;
+    }
+
+    #qc_tb_loginPageLeft {
+        width: 55%;
+    }
+
+    #qc_tb_loginPageRight {
+        width: 45%;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+
+    #qc_tb_loginPage::before {
+        width: 100%;
+        opacity: 0.3;
+    }
+
+    #qc_tb_loginPageLeft {
+        display: none;
+    }
+
+    #qc_tb_loginPageRight {
+        width: 50%;
+        margin: auto;
+    }
+
+    #qc_tb_loginBox,
+    #qc_tb_loginOr,
+    #qc_tb_loginOptionsBox {
+        width: 90%;
+    }
+
+}
+
+@media screen and (max-width: 600px) {
+    #qc_tb_loginPageRight {
+        width: 70%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    #qc_tb_loginPageRight {
+        width: 85%;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    #qc_tb_loginPageRight {
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 425px) {
+
+    #qc_tb_loginPage::before {
+        background: none;
+    }
+
+    #qc_tb_loginPageRight {
+        width: 100%;
+    }
+}

@@ -1,0 +1,262 @@
+#qc_tb_signupPage {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    background-color: var(--primarydark);
+    position: relative;
+}
+
+#qc_tb_signupPage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 65%;
+    background-image: url('../Images/login\ background.jpg');
+    background-size: cover;
+    z-index: 0;
+    opacity: 0.4;
+}
+
+#qc_tb_signupLeft,
+#qc_tb_signupRight {
+    height: 100%;
+    display: flex;
+}
+
+#qc_tb_signupLeft {
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 40px;
+    color: var(--primarylight);
+    z-index: 1;
+}
+
+#qc_tb_signupLeft h2 {
+    font-size: 40px;
+}
+
+#qc_tb_signupLeft p {
+    font-size: 24px;
+    margin-top: 15px;
+    line-height: 1.3;
+}
+
+#qc_tb_signupRight {
+    width: 35%;
+    z-index: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#qc_tb_signupBox {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#qc_tb_signupBox img {
+    height: 36px;
+    aspect-ratio: 1;
+    margin-bottom: 15px;
+}
+
+
+.qc_tb_InputCont {
+    height: 45px;
+    width: 100%;
+    padding: 0 10px;
+    margin: 5px 0;
+    border: 1px solid var(--gray40);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.qc_tb_InputCont svg {
+    height: 18px;
+    width: 18px;
+    margin-right: 10px;
+}
+
+.qc_tb_InputCont input {
+    height: 100%;
+    flex-grow: 1;
+    font-size: 16px;
+    color: gray;
+}
+
+#qc_tb_signupPfpCont {
+    height: 45px;
+    width: 100%;
+    border: 1px solid var(--gray40);
+    border-radius: 4px;
+    color: gray;
+    font-size: 16px;
+    margin: 5px 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#qc_tb_signupPfpCont svg {
+    height: 18px;
+    aspect-ratio: 1;
+    margin-right: 5px;
+}
+
+#qc_tb_signupPfpCont input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#qc_tb_signupRememberBtn {
+    margin: 10px 0;
+    margin-right: auto;
+    align-items: center;
+    font-size: 14px;
+    color: var(--primarylight);
+}
+
+#qc_tb_signupRememberBtn svg {
+    height: 18px;
+    aspect-ratio: 1;
+    margin-right: 5px;
+}
+
+#qc_tb_signupRight p {
+    font-size: 14px;
+    text-align: center;
+    margin: 10px 0;
+    color: gray;
+    line-height: 1.4;
+}
+
+#qc_tb_signupRight p a {
+    color: #96f1b5;
+    margin: 0 5px;
+}
+
+#qc_tb_signupRight p a:hover {
+    text-decoration: underline;
+}
+
+#qc_tb_signupRight p:has(a) {
+    display: flex;
+    text-wrap: nowrap;
+    justify-content: center;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.qc_tb_signupBtns {
+    font-size: 16px;
+    width: 100%;
+    height: 45px;
+    color: var(--primarylight);
+    border: 1px solid var(--gray40);
+    margin: 10px 0;
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.qc_tb_signupBtns#main {
+    background-color: lightgray;
+    color: var(--primarydark);
+    border: none;
+}
+
+.qc_tb_signupBtns#disable {
+    color: gray;
+    cursor: not-allowed;
+}
+
+.qc_tb_signupBtns svg {
+    height: 18px;
+    aspect-ratio: 1;
+    margin-right: 8px;
+}
+
+#qc_tb_signupRight>button {
+    width: 70%
+}
+
+@media screen and (max-width: 1000px) {
+
+    #qc_tb_signupLeft,
+    #qc_tb_signupPage::before {
+        width: 60%;
+    }
+
+    #qc_tb_signupLeft h2 {
+        font-size: 32px;
+    }
+
+    #qc_tb_signupLeft p {
+        font-size: 20px;
+    }
+
+    #qc_tb_signupRight {
+        width: 40%;
+    }
+
+    #qc_tb_signupBox,
+    #qc_tb_signupBox~button {
+        width: 80%;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+
+    #qc_tb_signupPage::before {
+        width: 100%;
+        opacity: 0.2;
+    }
+
+    #qc_tb_signupLeft {
+        display: none;
+    }
+
+    #qc_tb_signupRight {
+        width: 60%;
+        margin: auto;
+    }
+
+
+    #qc_tb_signupBox,
+    #qc_tb_signupBox~button {
+        width: 90%;
+    }
+
+}
+
+@media screen and (max-width: 550px) {
+
+    #qc_tb_signupRight {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 425px) {
+
+    #qc_tb_signupPage::before {
+        background: none;
+    }
+
+    #qc_tb_signupRight {
+        width: 90%;
+    }
+
+    #qc_tb_signupBox,
+    #qc_tb_signupBox~button {
+        width: 100%;
+    }
+}

@@ -1,0 +1,223 @@
+#qc_tb_dashboard header {
+    width: 100%;
+    height: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: height 300ms ease;
+}
+
+#qc_tb_dashboard header.qc_tb_bgImgBackdropFilter::after {
+    backdrop-filter: brightness(0.6) !important;
+}
+
+#qc_tb_dashboard header.jumbotronShrinked {
+    height: 0;
+}
+
+#qc_tb_dashboard header div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--primarylight);
+    z-index: 1;
+}
+
+#qc_tb_dashboard header div p:nth-child(1) {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+#qc_tb_dashboard #body {
+    height: calc(100% - 200px);
+    width: 100%;
+    transition: height 100ms ease;
+}
+
+#qc_tb_dashboard #body.full {
+    height: 100%;
+}
+
+#qc_tb_dashboard #qc_tb_container nav {
+    height: 50px;
+    width: 100%;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--accent);
+}
+
+#qc_tb_dashboard #qc_tb_container nav #left {
+    display: flex;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #left button {
+    padding: 8px 10px;
+    background-color: transparent;
+    color: gray;
+    font-size: 14px;
+    padding-bottom: 10px;
+    margin: 5px;
+    align-items: center;
+    position: relative;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #left button::after {
+    content: '';
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: var(--gray40);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 200ms ease;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #left button svg {
+    height: 16px;
+    aspect-ratio: 1;
+    margin-right: 5px;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #left button:hover::after {
+    transform: scaleX(1);
+}
+
+#qc_tb_dashboard #qc_tb_container nav #left button.active {
+    color: var(--secondary);
+}
+
+#qc_tb_dashboard #qc_tb_container nav #left button.active::after {
+    background-color: var(--accent);
+    animation: animateNavBtn 300ms ease;
+    transform: scaleX(1);
+}
+
+@keyframes animateNavBtn {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+#qc_tb_dashboard #qc_tb_container nav #right {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #right>div {
+    display: flex;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #right>div button {
+    padding: 8px;
+    display: flex;
+    cursor: pointer;
+    color: gray;
+    border-bottom: 2px solid transparent;
+    transition: all 300ms ease;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #right>div button svg {
+    height: 20px;
+    width: 20px;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #right>div button.active {
+    border-color: var(--secondary);
+    color: var(--secondary);
+    cursor: default;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #right button svg {
+    transition: transform 500ms ease;
+}
+
+#qc_tb_dashboard #qc_tb_container nav #right button.rotate svg {
+    transform: rotate(180deg);
+}
+
+#qc_tb_dashboard #body section {
+    height: calc(100% - 50px);
+    width: 100%;
+}
+
+#qc_tb_dashboard #body section:has(article) {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+#qc_tb_dashboard #body section :where(#pinned, #unpinned) {
+    display: flex;
+    flex-wrap: wrap;
+    transition: all 500ms ease;
+    gap: 10px;
+}
+
+#qc_tb_dashboard #body section #pinned:has(article) {
+    margin-bottom: 10px;
+}
+
+#qc_tb_dashboard #body section #pinned .pinBtn {
+    opacity: 1 !important;
+    transform: translateY(0);
+}
+
+/* For Tabs and iPads */
+
+@media screen and (width<=1024px) {
+    #qc_tb_dashboard #body section article {
+        width: calc(33% - 6px);
+    }
+}
+
+@media screen and (width<=768px) {
+    #qc_tb_dashboard #body section article.qc_tb_taskTile {
+        width: calc(50% - 5px);
+    }
+}
+
+/* For Smaller Tabs or Foldable phones */
+
+@media screen and (width<=540px) {
+    #qc_tb_dashboard #body section article {
+        width: calc(50% - 6px);
+    }
+}
+
+@media screen and (width<=500px) {
+    #qc_tb_dashboard #qc_tb_container nav {
+        padding: 0 10px;
+    }
+
+    #qc_tb_dashboard #qc_tb_container nav #left button {
+        font-size: 0;
+        padding: 8px;
+    }
+
+    #qc_tb_dashboard #qc_tb_container nav #left button svg {
+        margin: 0;
+        height: 20px;
+    }
+
+    #qc_tb_dashboard #body section article.qc_tb_taskTile {
+        width: 100%;
+    }
+}
+
+@media screen and (width<=425px) {
+    #qc_tb_dashboard header div p:nth-child(1) {
+        font-size: 24px;
+    }
+}

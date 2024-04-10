@@ -1,0 +1,397 @@
+#qc_tb_folderPage #qc_tb_container {
+    display: flex;
+    position: relative;
+}
+
+#qc_tb_folderLeft {
+    height: 100%;
+    width: 25%;
+    border-right: 1px solid var(--accent);
+}
+
+#qc_tb_folderLeftHead {
+    height: 10%;
+    width: 100%;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: gray;
+}
+
+#qc_tb_folderLeftHead h2 {
+    font-weight: 100;
+}
+
+#qc_tb_folderLeftBody {
+    height: 90%;
+    width: 100%;
+    overflow-y: auto;
+    padding: 20px 0;
+}
+
+.qc_tb_folderTile {
+    width: 100%;
+    height: 50px;
+    border-bottom: 1px solid var(--gray20);
+    color: gray;
+    transition: all 300ms ease-in-out;
+}
+
+.lightmode .qc_tb_folderTile:hover {
+    color: var(--primarydark);
+    background-color: var(--accent);
+}
+
+.darkmode .qc_tb_folderTile:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.lightmode .qc_tb_folderTile.active {
+    background-color: var(--accent);
+    border-color: var(--primarydark);
+    color: var(--primarydark);
+}
+
+.darkmode .qc_tb_folderTile.active {
+    background-color: var(--gray10);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.qc_tb_folderTile a {
+    width: 100%;
+    height: 100%;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+}
+
+.qc_tb_folderTile a:hover {
+    text-decoration: underline;
+}
+
+.qc_tb_folderTileIcon {
+    margin-right: 10px;
+    display: flex;
+}
+
+.qc_tb_folderTile svg {
+    height: 18px;
+    aspect-ratio: 1;
+}
+
+.qc_tb_folderTileName {
+    flex: 1;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    text-transform: capitalize;
+    font-size: 18px;
+}
+
+#qc_tb_folderRight {
+    height: 100%;
+    width: 75%;
+    position: relative;
+}
+
+#qc_tb_noFolderSelected {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+}
+
+#qc_tb_noFolderSelected svg {
+    height: 250px;
+    margin-bottom: 15px;
+}
+
+#qc_tb_noFolderSelected h2 {
+    font-size: 30px;
+    font-weight: 100;
+    text-align: center;
+}
+
+#qc_tb_folderRightHead {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+}
+
+#qc_tb_flrhLeft,
+#qc_tb_flrhRight {
+    width: 8%;
+}
+
+#qc_tb_flrhMiddle {
+    width: 84%;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    color: gray;
+    font-size: 22px;
+    text-align: center;
+}
+
+#qc_tb_flrhRight button {
+    margin-left: auto;
+}
+
+#qc_tb_folderRightBody {
+    max-height: 90%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-around;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.qc_tb_fldrFileTile {
+    height: 50px;
+    max-width: 50%;
+    padding: 0 5px;
+    display: flex;
+    flex: 1 0 48%;
+    align-items: center;
+    background-color: var(--gray10);
+    border-radius: 6px;
+    list-style: none;
+}
+
+.qc_tb_fldrFileTile:hover {
+    background-color: var(--gray20);
+}
+
+.qc_tb_fldrFileTile a {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.qc_tb_fldrFileTileIcon {
+    margin: 10px;
+    display: flex;
+}
+
+.qc_tb_fldrFileTileIcon svg {
+    height: 18px;
+    aspect-ratio: 1;
+    color: gray;
+    margin: auto;
+}
+
+.qc_tb_fldrFileTileName {
+    flex: 1;
+    font-size: 18px;
+    color: gray;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* ----------------- CREATE FOLDER CONT --------------------- */
+
+#qc_tb_createFolderOuter,
+#qc_tb_editFolderOuter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    backdrop-filter: blur(4px);
+}
+
+#qc_tb_createFolderInner,
+#qc_tb_editFolderInner {
+    height: 50%;
+    width: 50%;
+    padding: 15px;
+    background-color: #181820;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#qc_tb_createFolderInner.full,
+#qc_tb_editFolderInner.full {
+    height: 80%;
+}
+
+#qc_tb_createFolderHead,
+#qc_tb_createFolderFoot,
+#qc_tb_editFolderHead,
+#qc_tb_editFolderFoot {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.empty #qc_tb_createFolderHead,
+.empty #qc_tb_createFolderFoot,
+.empty #qc_tb_editFolderHead,
+.empty #qc_tb_editFolderFoot {
+    height: 20%;
+}
+
+#qc_tb_cflhLeft,
+#qc_tb_eflhLeft,
+#qc_tb_cflhRight,
+#qc_tb_eflhRight {
+    width: 20%;
+}
+
+#qc_tb_cflhMiddle,
+#qc_tb_eflhMiddle {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+}
+
+#qc_tb_cflhRight button,
+#qc_tb_eflhRight button {
+    margin-left: auto;
+}
+
+:where(#qc_tb_editFolderBody, #qc_tb_createFolderBody):has(li) {
+    height: 80%;
+    width: 100%;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.qc_tb_updateFolderTile {
+    height: 50px;
+    width: 100%;
+    padding: 0 5px;
+    margin: 15px 0;
+    background-color: var(--gray10);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    color: gray;
+    cursor: pointer;
+    transition: all 300ms ease;
+}
+
+.qc_tb_updateFolderTile:hover {
+    background-color: var(--gray40);
+    color: var(--primarylight);
+}
+
+.qc_tb_updfltileLeft,
+.qc_tb_updfltileRight {
+    margin: 0 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.qc_tb_updfltileLeft svg {
+    height: 18px;
+    aspect-ratio: 1;
+}
+
+.qc_tb_updfltileRight svg {
+    height: 20px;
+    aspect-ratio: 1;
+}
+
+.checked .qc_tb_updfltileRight svg {
+    color: var(--secondary);
+}
+
+.qc_tb_updfltileMiddle {
+    flex: 1;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+}
+
+#qc_tb_createFolderFoot,
+#qc_tb_editFolderFoot {
+    justify-content: center;
+}
+
+@media screen and (width<=1024px) {
+
+    #qc_tb_createFolderInner,
+    #qc_tb_editFolderInner {
+        width: 70%;
+    }
+}
+
+@media screen and (width<=850px) {
+    #qc_tb_folderRight {
+        width: 75%;
+    }
+
+    #qc_tb_folderLeft {
+        width: 35%;
+    }
+
+    .qc_tb_fldrFileTile {
+        max-width: 100%;
+        flex: 1 0 50%;
+    }
+}
+
+
+@media screen and (width<=768px) {
+
+    #qc_tb_createFolderInner,
+    #qc_tb_editFolderInner {
+        width: 80%;
+    }
+}
+
+@media screen and (width<=560px) {
+
+    #qc_tb_folderRight.hide,
+    #qc_tb_folderLeft.hide {
+        display: none;
+    }
+
+    #qc_tb_folderLeft {
+        border-right: none;
+    }
+
+    #qc_tb_folderRight:not(.hide),
+    #qc_tb_folderLeft:not(.hide) {
+        width: 100%;
+    }
+
+    #qc_tb_createFolderInner,
+    #qc_tb_editFolderInner {
+        width: 90%;
+    }
+}
+
+@media screen and (width<=425px) {
+
+    #qc_tb_createFolderInner,
+    #qc_tb_editFolderInner {
+        padding: 10px;
+        width: 95%;
+    }
+
+    #qc_tb_createFolderInner.full,
+    #qc_tb_editFolderInner.full {
+        height: 90%;
+    }
+}

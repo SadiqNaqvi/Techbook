@@ -1,0 +1,228 @@
+#qc_tb_createNotePage {
+    height: 100%;
+    width: 100%;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    background-size: cover;
+    background-position: center;
+}
+
+#qc_tb_cnpHead {
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#qc_tb_cnphLeft {
+    width: 20%;
+}
+
+#qc_tb_cnphMiddle {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+}
+
+#qc_tb_cnphRight {
+    width: 20%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#qc_tb_cnphRight>button {
+    margin-right: 10px;
+}
+
+
+#qc_tb_interimTranscriptCont {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    backdrop-filter: brightness(0.5);
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#qc_tb_interimTranscriptBox {
+    background-color: rgb(10, 10, 10);
+    border-radius: 6px;
+    height: 60%;
+    width: 60%;
+    padding: 15px;
+    color: var(--primarylight);
+    overflow-y: auto;
+}
+
+#qc_tb_cnpBody {
+    height: calc(100% - 100px);
+    width: 100%;
+    position: relative;
+    border-radius: 6px;
+    border: 1px solid var(--gray40);
+    font-size: 18px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+}
+
+.darkmode #qc_tb_cnpBody {
+    background-color: #000008;
+    color: var(--primarylight);
+}
+
+.lightmode #qc_tb_cnpBody {
+    background-color: ghostwhite;
+    color: var(--primarydark);
+}
+
+.qc_tb_bgImgBackdropFilter #qc_tb_cnpBody {
+    background-color: transparent;
+    border-color: var(--gray60);
+    color: var(--primarylight);
+}
+
+.ql-container {
+    font-size: inherit !important;
+    font-family: 'Railway', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+}
+
+.ql-editor {
+    padding-bottom: 20px !important;
+}
+
+.ql-editor *::selection {
+    background-color: var(--accent);
+    color: black;
+}
+
+.ql-editor * {
+    padding: 2px;
+    border-radius: 3px;
+}
+
+.ql-editor code {
+    background-color: gray !important;
+    color: white !important;
+}
+
+.quill {
+    height: 100%;
+    width: 100%;
+}
+
+.ql-editor.ql-blank::before {
+    color: var(--gray80) !important;
+}
+
+#qc_tb_cnpFoot {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#qc_tb_cnpfLeft,
+#qc_tb_cnpfRight {
+    font-size: 18px;
+    color: rgba(128, 128, 128);
+}
+
+.qc_tb_bgImgBackdropFilter #qc_tb_cnpfLeft,
+.qc_tb_bgImgBackdropFilter #qc_tb_cnpfRight {
+    color: rgba(248, 248, 255, 0.6);
+}
+
+#qc_tb_cnpFoot>button {
+    display: none;
+}
+
+#qc_tb_cnpfWordsCount {
+    border-left: 1px solid rgba(128, 128, 128);
+    padding-left: 10px;
+    margin-left: 10px;
+}
+
+@media screen and (width<=1024px) {
+    #qc_tb_interimTranscriptBox {
+        height: 70%;
+        width: 70%;
+    }
+}
+
+@media screen and (width<=768px) {
+
+    #qc_tb_cnphLeft,
+    #qc_tb_cnphRight {
+        width: 15%;
+    }
+
+    #qc_tb_cnphMiddle {
+        width: 70%;
+    }
+
+    #qc_tb_cnpfLeft,
+    #qc_tb_cnpfRight {
+        font-size: 16px;
+    }
+
+    #qc_tb_interimTranscriptBox {
+        height: 80%;
+        width: 80%;
+    }
+}
+
+@media screen and (width<=600px) {
+
+    #qc_tb_createNotePage {
+        padding: 0 10px;
+    }
+
+    #qc_tb_cnphLeft,
+    #qc_tb_cnphRight {
+        width: auto;
+    }
+
+    #qc_tb_cnphMiddle {
+        width: auto;
+        flex: 1;
+    }
+
+    #qc_tb_cnphRight>button {
+        margin: 0;
+    }
+
+    #qc_tb_cnphRight #micBtn {
+        display: none;
+    }
+
+    #qc_tb_cnpBody {
+        height: calc(100% - 110px);
+        font-size: 16px;
+    }
+
+    #qc_tb_cnpFoot {
+        height: 50px;
+        justify-content: space-between;
+    }
+
+    #qc_tb_cnpFoot>button {
+        display: block;
+    }
+
+    #qc_tb_cnpfRight {
+        display: none;
+    }
+
+    #qc_tb_interimTranscriptBox {
+        height: 90%;
+        width: 90%;
+    }
+}

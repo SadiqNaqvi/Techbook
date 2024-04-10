@@ -1,0 +1,62 @@
+#qc_tb_loadingPage {
+    position: absolute;
+    inset: 0;
+    z-index: 90;
+    border-radius: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.lightmode #qc_tb_loadingPage.loading {
+    background-color: var(--primarylight);
+}
+
+.darkmode #qc_tb_loadingPage.loading {
+    background-color: var(--primarydark);
+}
+
+#qc_tb_loadingPage.transition {
+    backdrop-filter: brightness(0.8) blur(5px);
+}
+
+#qc_tb_loadingCont {
+    display: flex;
+}
+
+.qc_tb_loadingBall {
+    height: 20px;
+    width: 20px;
+    border-radius: 100%;
+    margin: 5px;
+    animation: loadingBalls forwards 800ms infinite ease;
+}
+
+.qc_tb_loadingBall.qc_tb_redBall {
+    background-color: var(--warningRed);
+}
+
+.qc_tb_loadingBall.qc_tb_yellowBall {
+    background-color: yellow;
+    animation-delay: 200ms;
+}
+
+.qc_tb_loadingBall.qc_tb_greenBall {
+    background-color: lime;
+    animation-delay: 400ms;
+}
+
+@keyframes loadingBalls {
+    0% {
+        transform: scale(0.5);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0.5);
+    }
+}

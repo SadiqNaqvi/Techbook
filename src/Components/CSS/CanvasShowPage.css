@@ -1,0 +1,62 @@
+#qc_tb_canvasShowPage {
+    height: 100%;
+    width: 100%;
+    padding: 0 15px;
+}
+
+#qc_tb_canvasShowPageHead,
+#qc_tb_canvasShowPageFoot {
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#qc_tb_csphLeft,
+#qc_tb_csphRight {
+    width: 20%;
+}
+
+#qc_tb_csphMiddle {
+    width: 60%;
+}
+
+#qc_tb_cspNameCont {
+    max-width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    width: fit-content;
+    color: gray;
+    font-size: 20px;
+    margin: auto;
+}
+
+#qc_tb_optionBtn {
+    margin-left: auto;
+}
+
+#qc_tb_canvasShowPageBody {
+    height: calc(100% - 75px);
+    width: 100%;
+    border-radius: 6px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+@media (width<=768px) {
+
+    #qc_tb_csphLeft,
+    #qc_tb_csphRight {
+        width: 10%;
+    }
+
+    #qc_tb_csphMiddle {
+        width: 80%;
+    }
+
+    #qc_tb_cspNameCont {
+        max-width: 80%;
+    }
+}
