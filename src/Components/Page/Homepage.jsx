@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { doc, setDoc, getDocs, deleteDoc, collection, updateDoc } from 'firebase/firestore';
+import { openIDB, addToIDB, updateInIDB, deleteInIDB, fetchFromIDB, fetchAllFromIDB } from '../IndDB'
 import { db } from '../firebase';
 import Dashboard from './Dashboard';
 import CreateNotePage from './CreateNotePage';

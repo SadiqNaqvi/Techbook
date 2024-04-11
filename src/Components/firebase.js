@@ -3,13 +3,13 @@ import { getAuth, signInWithPopup, signOut } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_APP_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_ID,
-  appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MANAGEMENT_ID,
+  apiKey: "AIzaSyAmvDUlSkLyRY93bu2LB3U1FRPogDeL8eo",
+  authDomain: "techbook-by-qcore.firebaseapp.com",
+  projectId: "techbook-by-qcore",
+  storageBucket: "techbook-by-qcore.appspot.com",
+  messagingSenderId: "154531357862",
+  appId: "1:154531357862:web:a8a98816be20d437b14067",
+  measurementId: "G-9P293J668H",
 };
 
 const app = initializeApp(firebaseConfig);
