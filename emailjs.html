@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IDK</title>
+    <style>
+      #taskShowCont li {
+        margin: 10px 0;
+        list-style: "🤫";
+      }
+      #taskShowCont li * {
+        margin: 0 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="inputCont">
+      <input type="text" />
+      <button id="getTask">Get</button>
+      <button id="addTask">Add</button>
+    </div>
+    <ul id="taskShowCont"></ul>
+  </body>
+
+  <!-- <script>
+    let db;
+    const inputVal = document.querySelector("input");
+    const taskShowCont = document.getElementById("taskShowCont");
+
+    const openIDB = () => {
+      const request = indexedDB.open("Techbook Database");
+
+      request.onupgradeneeded = (e) =>
+        e.target.result.createObjectStore("TasksData", { keyPath: "uuid" });
+
+      request.onsuccess = (res) => {
+        db = res.target.result;
+        getTasks();
+      };
+      request.onerror = (err) => console.log(err);
+    };
+
+    window.onload = () => openIDB();
+
+    const appendList = (task) => {
+      const list = document.createElement("li");
+      const checkBox = document.createElement("input");
+      checkBox.type = "checkbox";
+      checkBox.checked = task.isCompleted;
+      checkBox.addEventListener("click", () => updateTasks(task.uuid));
+      list.appendChild(checkBox);
+      const nameSpan = document.createElement("span");
+      nameSpan.innerText = task.taskName;
+      list.appendChild(nameSpan);
+      const btn = document.createElement("button");
+      btn.innerText = "Delete";
+      btn.addEventListener("click", () => deleteTasks(task.uuid));
+      list.appendChild(btn);
+      taskShowCont.appendChild(list);
+    };
+
+    const addTask = () => {
+      const taskToAdd = {
+        taskName: inputVal.value,
+        uuid: window.crypto.randomUUID(),
+        isCompleted: false,
+      };
+
+      const request = db
+        .transaction(["TasksData"], "readwrite")
+        .objectStore("TasksData")
+        .add(taskToAdd);
+
+      request.onsuccess = (e) => {
+        appendList(taskToAdd);
+      };
+
+      request.onerror = (event) => {
+        console.error("Error adding task: " + event.target.errorCode);
+      };
+    };
+
+    const updateTasks = (uuid) => {
+      const request = db
+        .transaction(["TasksData"], "readonly")
+        .objectStore("TasksData")
+        .get(uuid);
+      request.onsuccess = (e) => {
+        const task = e.target.result;
+
+        db.transaction(["TasksData"], "readwrite")
+          .objectStore("TasksData")
+          .put({ ...task, isCompleted: !task.isCompleted });
+      };
+    };
+
+    const deleteTasks = (uuid) => {
+      const request = db
+        .transaction(["TasksData"], "readwrite")
+        .objectStore("TasksData")
+        .delete(uuid);
+
+      const elementToRemove = event.target.parentElement;
+
+      request.onsuccess = () => {
+        taskShowCont.removeChild(elementToRemove);
+      };
+    };
+
+    const getTasks = () => {
+      const request = db
+        .transaction(["TasksData"], "readonly")
+        .objectStore("TasksData")
+        .getAll();
+
+      request.onsuccess = function (event) {
+        event.target.result.forEach((element) => {
+          appendList(element);
+        });
+      };
+
+      request.onerror = function (event) {
+        console.error("Error retrieving tasks: " + event.target.errorCode);
+      };
+    };
+  </script> -->
+
+  <script type="module">
+    import {
+      openIDB,
+      addToIDB,
+      updateInIDB,
+      deleteInIDB,
+      fetchFromIDB,
+      fetchAllFromIDB,
+    } from "./IDB.js";
+
+    const inputVal = document.querySelector("input");
+    const taskShowCont = document.getElementById("taskShowCont");
+
+    window.onload = () =>
+      openIDB("Techbook Database", [
+        { name: "NotesData", key: "uuid" },
+        { name: "TasksData", key: "uuid" },
+        { name: "CanvasData", key: "uuid" },
+      ]);
+
+    const appendList = (task) => {
+      const list = document.createElement("li");
+      const checkBox = document.createElement("input");
+      checkBox.type = "checkbox";
+      checkBox.checked = task.isCompleted;
+      checkBox.addEventListener("click", () => updateTasks(task.uuid));
+      list.appendChild(checkBox);
+      const nameSpan = document.createElement("span");
+      nameSpan.innerText = task.taskName;
+      list.appendChild(nameSpan);
+      const btn = document.createElement("button");
+      btn.innerText = "Delete";
+      btn.addEventListener("click", () => deleteTasks(task.uuid));
+      list.appendChild(btn);
+      taskShowCont.appendChild(list);
+    };
+
+    const addTask = () => {
+      const taskToAdd = {
+        taskName: inputVal.value,
+        uuid: window.crypto.randomUUID(),
+        isCompleted: false,
+      };
+
+      addToIDB(taskToAdd, "TasksData")
+        .then((res) => console.log(res))
+        .catch((err) => console.error(err));
+    };
+
+    const updateTasks = (uuid) => {
+      fetchFromIDB(uuid, "TasksData")
+        .then((res) => {
+          updateInIDB(
+            { ...res, isCompleted: event.target.checked },
+            "TasksData"
+          )
+            .then((res) => console.log(res))
+            .catch((err) => console.error(err));
+        })
+        .catch((err) => console.error(err));
+    };
+
+    const deleteTasks = (uuid) => {
+      const elementToRemove = event.target.parentElement;
+      deleteInIDB(uuid, "TasksData")
+        .then(() => taskShowCont.removeChild(elementToRemove))
+        .catch((err) => console.error(err));
+    };
+
+    const getTasks = () => {
+      fetchAllFromIDB("TasksData")
+        .then((res) => {
+          res.length &&
+            res.forEach((element) => {
+              appendList(element);
+            });
+        })
+        .catch((err) => console.log(err));
+    };
+
+    document.getElementById("addTask").addEventListener("click", addTask);
+    document.getElementById("getTask").addEventListener("click", getTasks);
+  </script>
+</html>
