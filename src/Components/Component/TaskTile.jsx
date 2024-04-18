@@ -2,9 +2,12 @@ import '../CSS/TaskTile.css';
 import { useNavigate } from 'react-router-dom';
 
 export default function TaskTile(props) {
+    
     const navigate = useNavigate();
+
     return (
         <article className={'qc_tb_taskTile'}>
+            
             <div className="qc_tb_taskTile_left">
                 <button className="qc_tb_taskTileBtns pinBtn" onClick={() => props.updateTasksData('pin', props.element)}>
                     {
@@ -19,9 +22,11 @@ export default function TaskTile(props) {
                     }
                 </button>
             </div>
+
             <div className="qc_tb_taskTile_middle" onClick={() => navigate(`/task/${props.element.key}`)}>
                 {props.element.name}
             </div>
+            
             <div className="qc_tb_taskTile_right">
                 <button className="qc_tb_taskTileDeleteBtn qc_tb_taskTileBtns" onClick={() => props.updateWarning({ show:true, msg: `Are you sure you want to delete '${props.element.name}' ? `, greenMsg: 'Cancel', redMsg: 'Delete', func: () => props.updateTasksData('delete', props.element) })}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512">

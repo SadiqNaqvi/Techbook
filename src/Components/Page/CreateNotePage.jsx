@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import "../CSS/CreateNotePage.css"
 import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
@@ -23,35 +23,48 @@ export default function CreateNotePage(props) {
     const [backgroundImg, setBackgroundImg] = useState(null);
 
     useEffect(() => {
+        // Check if the noteKey is available. If it does, that means the user is trying to edit an existing file, else the user is trying to create a new file.
         if (noteKey) {
-            const tempNotes = props.notesData.find(el => el.key === noteKey)
+
+            const tempNotes = props.notesData.find(el => el.key === noteKey);
+
+            // If tempNotes is available, show the note to the user. Else the file may not exist anymore, in this case navigate the user to home.
             if (tempNotes) {
+
                 setNoteToEdit(tempNotes);
                 setNewNoteContent(tempNotes.advanceContent);
                 setPlainText(tempNotes.content);
                 setNoteName(tempNotes.name);
+
             } else {
                 navigate('/home');
-            }
+                props.UpdateNotification({ type: "red", msg: "The file you're trying to access may not exist anymore!" })
+            };
         }
 
         if ('webkitSpeechRecognition' in window) {
             const recognitionInstance = new window.webkitSpeechRecognition();
 
+            // Make interimResults to true, so we will get intermediate results while the user is speaking.
             recognitionInstance.interimResults = true;
 
+            // Keep the speech recognition instance as a state for later use.
             setRecognition(recognitionInstance);
         } else {
             console.log('SpeechRecognition is not supported in this browser');
         }
 
+        // Check if the user's choice for Note Background is none or if the user has selected any background.
         if (props.noteBg !== 'none') {
+
             setIsBackground(true);
-            if (props.noteBg === 'input') {
+
+            // Check if the user has chosen their custom Background or available backgrounds and handle accordingly.
+            if (props.noteBg === 'input')
                 setBackgroundImg(props.customNoteBg);
-            } else {
+            else
                 setBackgroundImg(bgImg[parseInt(props.noteBg)]);
-            }
+
         }
 
         setLoading('');
@@ -59,57 +72,60 @@ export default function CreateNotePage(props) {
 
     useEffect(() => {
         if (recognition) {
+            // Store the intermediate result to show it to the user.
             recognition.onresult = (event) => {
                 const interimTranscript = event.results[0][0].transcript;
-                setTranscript(interimTranscript.trim());
-
+                setTranscript(interimTranscript.trim()); //trim it so there's no unwanted spaces in it.
             };
 
+            // Store the final result to the Main Note Content.
             recognition.onend = () => {
-                if (isListening) {
-                    if (transcript.trim()) {
-                        setNewNoteContent(prev => prev + " " + transcript);
-                    }
-                    setTranscript('');
-                    recognition.start();
-                }
-            };
-        }
-    });
+                transcript.trim() && setNewNoteContent(prev => prev + " " + transcript);
+
+                // set the state for intermediate result to null so the previous result will not concat with the new one.
+                setTranscript('');
+
+                // If isListening is still true (means user wants to speak more) then keep the recognition on listening state.
+                isListening && recognition.start();
+            }
+        };
+    }, [isListening]);
 
     const handleChange = (newContent) => {
         setNewNoteContent(newContent);
-        if (reactQuillRef.current)
-            setPlainText(document.querySelector('.ql-editor').innerText);
+
+        // Extract the plain text and store it for later use.
+        reactQuillRef.current && setPlainText(document.querySelector('.ql-editor').innerText);
     };
 
     const handleSpeechToText = () => {
-        if (navigator.onLine) {
-            if (isListening) {
-                recognition.stop();
-                setIsListening(false);
-            } else {
-                setIsListening(true);
-                recognition.start();
-            }
+        // if isListening is true, means the recognition is already on the active state, stop the recognition else start the recognition.
+        if (isListening) {
+            recognition.stop();
+            setIsListening(false);
         } else {
-            props.UpdateNotification({ type: "red", msg: "You're Offline. Try Again when You're Online." })
+            recognition.start();
+            setIsListening(true);
         }
     }
 
     const handleExitBtn = () => {
-        if (plainText.trim().length === 0) {
-            navigate(window.history.length > 1 ? -1 : '/home');
-        } else {
+        // if note content is empty, navigate the user to previous page without any warning prompt else pop up a warning prompt.
+        plainText.trim().length ?
+            navigate(window.history.length > 1 ? -1 : '/home')
+            :
             props.updateWarning({ show: true, msg: 'Your note is unsaved. Are you sure you want to exit?', greenMsg: 'Cancel', redMsg: 'Exit', func: () => navigate(window.history.length > 1 ? -1 : '/home') })
-        }
     }
 
     const handleSaveBtn = () => {
+        // set loading to transition for the betterment of user's experience and also to prevent user from clicking multiple times on the save button. 
         setLoading('transition');
+
         const activeUser = JSON.parse(localStorage.getItem('QC-Techbook-ActiveUser'));
-        //if noteKey is available, that means user is trying to edit their note, otherwise user is creating their note.
+
+        //if noteKey is available, that means user is trying to edit the note, otherwise user is trying to create one.
         if (!noteKey) {
+
             const element = {
                 type: 'note',
                 name: noteName,
@@ -123,8 +139,12 @@ export default function CreateNotePage(props) {
                 offline: false,
                 owner: activeUser?.email
             }
+
+            // send this element with a callback to the function, in the Dashboard.jsx, to store it accordingly.
             props.updateNotesData('create', element, () => navigate('/home'));
+
         } else {
+
             const element = {
                 type: 'note',
                 name: noteName,
@@ -138,10 +158,13 @@ export default function CreateNotePage(props) {
                 offline: noteToEdit.offline,
                 owner: activeUser?.email
             }
+
+            // send this element with a callback to the function, in the Dashboard.jsx, to update it accordingly.
             props.updateNotesData('update', element, () => navigate('/home'));
         }
     }
 
+    // List of tools for quillJs.
     const toolbarOptions = [
         ["bold", "italic", "underline", "strike", "code"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -157,7 +180,9 @@ export default function CreateNotePage(props) {
     return (
         <>
             {loading && <Loading use={loading} />}
+
             <div id="qc_tb_createNotePage" className={`${isBackground ? "qc_tb_bgImgBackdropFilter" : ""}`} style={isBackground ? { backgroundImage: `url(${backgroundImg})` } : null}>
+
                 <section id="qc_tb_cnpHead">
                     <div id="qc_tb_cnphLeft">
                         <button className="qc_tb_btns" onClick={handleExitBtn}>
@@ -193,17 +218,19 @@ export default function CreateNotePage(props) {
                         }
                     </div>
                 </section>
+
                 <section id="qc_tb_cnpBody">
                     {isListening && <div id="qc_tb_interimTranscriptCont"><div id="qc_tb_interimTranscriptBox">{transcript}</div></div>}
                     <ReactQuill ref={reactQuillRef} theme="bubble" value={newNoteContent} onChange={handleChange} modules={{ toolbar: toolbarOptions }} placeholder="Let the words flow..." />
                 </section>
+
                 <section id="qc_tb_cnpFoot">
                     <div id="qc_tb_cnpfLeft">
                         <span id="qc_tb_cnpfLettersCount">Letters :
                             <span className="qc_tb_numberFont">{plainText.trim().length}</span>
                         </span>
                         <span id="qc_tb_cnpfWordsCount">Words :
-                            <span className="qc_tb_numberFont">{plainText.trim().length === 0 ? 0 : plainText?.trim().split(/\s+/).length || 0}</span>
+                            <span className="qc_tb_numberFont">{plainText?.trim().length ? plainText?.trim().split(/\s+/).length : 0}</span>
                         </span>
                     </div>
                     {recognition && window.navigator.onLine &&

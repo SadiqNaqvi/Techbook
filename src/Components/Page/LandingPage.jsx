@@ -15,9 +15,11 @@ export default function LandingPage(props) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
+        // If the user has signed-up or using the web app as a Guest then do not show this page, instead navigate them to the homepage.
         const activeUser = JSON.parse(localStorage.getItem('QC-Techbook-ActiveUser'));
         activeUser && navigate('/home');
-        setLoading(false)
+        setLoading(false);
     }, []);
 
     const appFeatures = [

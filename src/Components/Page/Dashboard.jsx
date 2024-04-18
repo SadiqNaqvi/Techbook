@@ -4,74 +4,70 @@ import AddNewCont from '../Component/AddNewCont';
 import NPBgImg from "../Background/NpBgImg.jpg"
 import NotesCard from '../Component/NotesCard';
 import CanvasCard from '../Component/CanvasCard';
-import { useNavigate } from "react-router-dom";
+import TaskTile from '../Component/TaskTile';
 import Loading from '../Component/Loading';
 import { CSSTransition, TransitionGroup, SwitchTransition } from 'react-transition-group';
-import TaskTile from '../Component/TaskTile';
 
 export default function Dashboard(props) {
     const [welcomeContShrinked, setWelcomeContShrinked] = useState(false);
     const [timeOfDay, setTimeOfDay] = useState('');
     const [bgImg, setBgImg] = useState(null);
     const [topNav, setTopNav] = useState('note');
-    const [navView, setNavView] = useState('grid');
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
     const [dashboardArray, setDashboardArray] = useState([]);
 
     useEffect(() => {
-        if (new Date().getHours() >= 4 && new Date().getHours() < 12) {
+        // Get the time of the day to greet user.
+        if (new Date().getHours() >= 4 && new Date().getHours() < 12)
             setTimeOfDay('Morning');
-        } else if (new Date().getHours() >= 12 && new Date().getHours() < 17) {
+        else if (new Date().getHours() >= 12 && new Date().getHours() < 17)
             setTimeOfDay('Afternoon');
-        } else {
+        else
             setTimeOfDay('Evening');
-        }
 
+        // check if there is already an image for the jumbotron in the localstorage, so we don't need to fetch image from unsplash api on every render.
         const bgImgData = JSON.parse(localStorage.getItem('QC-Tb-BgImgData'));
 
-        if (navigator.onLine) {
+        if (window.navigator?.onLine) {
+
+            // if an imageUrl is available in the localstorage then show this image to the user, else fetch a new image from unsplash.
             if (bgImgData && bgImgData.date === new Date().toLocaleDateString())
                 setBgImg(bgImgData.imgUrl);
             else
-                fetchImgFromUnsplash().then(res => {
-                    localStorage.setItem('QC-Tb-BgImgData', JSON.stringify({ date: new Date().toLocaleDateString(), imgUrl: res }));
-                }).catch(() => {
-                    setBgImg(NPBgImg)
-                });
+                fetchImgFromUnsplash()
 
-        } else
-            bgImgData ? setBgImg(bgImgData.imgUrl) : setBgImg(NPBgImg);
+        } else setBgImg(NPBgImg);
 
     }, []);
 
     const fetchImgFromUnsplash = async () => {
-        const apiKey = 'dXcEokGn6M2wSqL3LpSFNJrzNWA8K2isAEVMba5nyt4';
+        const apiKey = import.meta.env.VITE_UNSPLASH_API_KEY;
         const query = ['Travel-Destinations', 'Landscape', 'Snow-Mountain', 'Scenery', 'Night-City', 'Valley', 'Mountain', 'Dawn', 'Winter', 'Forest'];
 
-        return fetch(`https://api.unsplash.com/search/photos?query=${query[Math.floor(Math.random() * 10)]}&orientation=landscape&client_id=${apiKey}`)
-
+        await fetch(`https://api.unsplash.com/search/photos?query=${query[Math.floor(Math.random() * 10)]}&orientation=landscape&client_id=${apiKey}`)
             .then(response => response.json())
             .then(data => {
+                // choose a random image from the available 10 images
                 const imageURL = data.results[Math.floor(Math.random() * 10)].urls.regular;
                 setBgImg(imageURL);
-                return imageURL;
-            })
-            .catch(() => {
-                setBgImg(NPBgImg);
-            });
 
+                // store this image in the localstorage and show this for every render within the same date. 
+                localStorage.setItem('QC-Tb-BgImgData', JSON.stringify({ date: new Date().toLocaleDateString(), imgUrl: imageURL }));
+            })
+            .catch(() => setBgImg(NPBgImg));
     }
 
     useEffect(() => {
+        // set the loading to false as soon as an image for the jumbotron is provided, until then keep showing the loading screen.
+        bgImg && setLoading(false);
+    }, [bgImg]);
+
+    useEffect(() => {
+        //change the display data according to the navigation tabs.
         topNav === 'note' && setDashboardArray(props.notesData?.filter(el => el.archive === false));
         topNav === 'task' && setDashboardArray(props.tasksData);
         topNav === 'canvas' && setDashboardArray(props.canvasData?.filter(el => el.archive === false));
     }, [topNav, props]);
-
-    useEffect(() => {
-        bgImg && setLoading(false);
-    }, [bgImg])
 
     return (
         <main id="qc_tb_container">
@@ -109,18 +105,6 @@ export default function Dashboard(props) {
                         </button>
                     </div>
                     <div id="right">
-                        <div>
-                            <button className={navView === 'grid' ? 'active' : ''} onClick={() => setNavView('grid')}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zM2.5 2a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zM1 10.5A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3zm6.5.5A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3zm1.5-.5a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z" />
-                                </svg>
-                            </button>
-                            <button className={navView === 'list' ? 'active' : ''} onClick={() => setNavView('list')}>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                                    <path fillRule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-                                </svg>
-                            </button>
-                        </div>
                         <button className={`${!welcomeContShrinked ? 'rotate' : ''} qc_tb_btns`} onClick={() => setWelcomeContShrinked(!welcomeContShrinked)}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                                 <path fillRule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>

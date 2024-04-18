@@ -7,6 +7,7 @@ export default function Navbar(props) {
 
     return (
         <nav id="qc_tb_sidebar">
+
             <section id="qc_tb_sbHead">
                 <button id="qc_tb_sbApplogo" className='tooltip tooltipRight' data-tooltipcontent="Techbook" onClick={() => props.updateTheme(props.appTheme === 'dark' ? 'light' : 'dark')}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 174 60">
@@ -17,6 +18,7 @@ export default function Navbar(props) {
                     </svg>
                 </button>
             </section>
+
             <section id="qc_tb_sbBody">
                 <button id="home" className={`${page === '/home' ? `active` : ''} qc_tb_sbBtn tooltip tooltipRight`} data-tooltipcontent="Home" onClick={() => navigate('/home')}>
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,9 +55,10 @@ export default function Navbar(props) {
                     </svg>
                 </button>
             </section>
+
             <section id="qc_tb_sbFoot">
                 <button id="qc_tb_sbUserOuter" className='tooltip tooltipRight' data-tooltipcontent={props.user.name} onClick={() => navigate("/setting/account")}>
-                    {props.user.avatar !== null ?
+                    {props.user.avatar ?
                         <img src={props.user.avatar} alt="" />
                         :
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,8 +66,6 @@ export default function Navbar(props) {
                             <path d="M18.74 19.3801C16.96 21.0101 14.6 22.0001 12 22.0001C9.40001 22.0001 7.04001 21.0101 5.26001 19.3801C5.36001 18.4401 5.96001 17.5201 7.03001 16.8001C9.77001 14.9801 14.25 14.9801 16.97 16.8001C18.04 17.5201 18.64 18.4401 18.74 19.3801Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                             <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-
-
                     }
                 </button>
             </section>

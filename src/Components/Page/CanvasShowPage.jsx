@@ -1,5 +1,5 @@
 import '../CSS/CanvasShowPage.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group';
 import AddToFolder from '../Component/AddToFolder';
@@ -10,6 +10,7 @@ import { db } from '../firebase';
 export default function CanvasShowPage(props) {
     const { canvasKey } = useParams();
     const navigate = useNavigate();
+    const optionBoxBtn = useRef(null);
     const [canvasToShow, setCanvasToShow] = useState(null);
     const [isOwner, setIsOwner] = useState(true);
     const [loading, setLoading] = useState('loading');
@@ -19,43 +20,66 @@ export default function CanvasShowPage(props) {
     const [folderState, setFolderState] = useState('none');
 
     useEffect(() => {
+        // Check if global canvasData and canvasKey exist 
         if (props.canvasData && canvasKey) {
+
+            // Check if the canvasKey includes "u:" and "f:". If it does, this means that this canvas file is shared via link and perform task according to it.
             if (canvasKey.includes('u:') && canvasKey.includes('f:')) {
+
+                // Fetch the user key and file key from the url.
                 const userKey = canvasKey.split('-')[0].replace('u:', '');
                 const fileKey = canvasKey.split('-')[1].replace('f:', '');
+
+                // If the userKey is same as the uuid of the active user, it means that this user is trying to access their own canvas using shared link instead of directly accessing it via dashboard.
                 if (props.user.authProvider !== 'guest' && props.user.key === userKey) {
+
+                    // In this case, hand them the file from the global canvas data, if the file exist there, instead of fetching it from the database which will again cost user's internet. 
                     const openedCanvas = props.canvasData.find(el => el.key === fileKey);
+
+                    // If this file exist in their global Canvas Data, then hand them this file and navigate to their local url. If the file doesn't exist in it, that means the file no longer exist, in this case navigate the user to home.
                     if (openedCanvas) {
                         navigate(`/canvas/${fileKey}`);
                         setCanvasToShow(openedCanvas);
-                    } else { navigate('/home') }
-                } else {
+                    } else {
+                        navigate('/home');
+                        props.UpdateNotification({ type: "red", msg: "The file you're trying to access may no longer exist!" })
+                    }
+
+                }
+                // Fetch the file from the database, if exist else navigate the user to Dashboard.
+                else {
                     if (window.navigator.onLine) {
                         getDocs(collection(db, 'data', userKey, 'canvasData'), fileKey)
                             .then(res => {
+                                // if the file exist in the database, show it to the user. Else navigate the user to home.
                                 if (!res.empty) {
                                     setCanvasToShow(res.docs[0].data());
                                     setIsOwner(false);
                                 } else {
-                                    navigate('/home');
-                                }
+                                    navigate('/home')
+                                    props.UpdateNotification({ type: "red", msg: "The file you're trying to access may not exist anymore." })
+                                };
+
                             }).catch(err => {
                                 console.error(err);
                                 navigate('/home');
-                                props.updateNotification({ type: 'red', msg: 'Something went wrong!' })
+                                props.updateNotification({ type: 'red', msg: 'Something went wrong!. Please try again.' })
                             });
-                    } else {
-                        navigate('/home')
-                    }
+                    } else navigate('/home');
                 }
             } else {
+                // Display the file from the global CanvasData, if exist.
                 const openedCanvas = props.canvasData.find(el => el.key === canvasKey);
-                if (openedCanvas) {
-                    setCanvasToShow(openedCanvas);
-                } else { navigate('/home') }
+                if (openedCanvas)
+                    setCanvasToShow(openedCanvas)
+                else {
+                    navigate('/home')
+                    props.UpdateNotification({ type: "red", msg: "The file you're trying to access may not exist anymore!" })
+                };
             }
         }
 
+        // Extracting all the folders which contains this file for faster accessabilty of data.
         props.folderData && canvasKey && props.folderData.forEach(folder => {
             folder.elements.includes(canvasKey) && setFileFolder([...fileFolder, folder.key]);
         });
@@ -63,33 +87,39 @@ export default function CanvasShowPage(props) {
     }, []);
 
     useEffect(() => {
+        // Set loading to false as soon as the canvasToShow holds the data of the accessed file. Until then, keep it true.
         canvasToShow && setLoading(false);
     }, [canvasToShow]);
 
     useEffect(() => {
-        document.body.addEventListener('click', () => (optionBox && document.activeElement !== document.querySelector('#qc_tb_csphRight .qc_tb_btns')) && setOptionBox(false));
 
-        return () => document.body.removeEventListener('click', () => (optionBox && document.activeElement !== document.querySelector('#qc_tb_csphRight .qc_tb_btns')) && setOptionBox(false));
+        // if optionBox is open, then only addEventListener to the body, otherwise do nothing.
+        const closeOptionBox = () => optionBox && document.activeElement != optionBoxBtn.current && setOptionBox(false);
+
+        document.body.addEventListener('click', closeOptionBox);
+
+        return () => document.body.removeEventListener('click', closeOptionBox);
     }, [optionBox]);
 
     const handleManageFolder = () => {
-        props.folderData.length > 0 ? setFolderState('update') : setFolderState('new');
+        // if there exist any folder in the global FolderData then show these folders as options, otherwise render a container to create new folder.
+        props.folderData.length ? setFolderState('update') : setFolderState('new');
         setManagingFolder(true);
     }
 
     const copyLinkToClipboard = () => {
-        navigator.clipboard.writeText(`${window.location.origin}/canvas/u:${props.user.key}-f:${canvasKey}`).then(() => {
-            props.updateNotification({ type: 'green', msg: 'Link Copied to Clipboard.' })
-            setOptionBox(false);
-        }).catch(() => {
-            props.updateNotification({ type: 'red', msg: 'Something went wrong. Please Try Again.' })
-        });
+        navigator.clipboard?.writeText(`${window.location.origin}/canvas/u:${props.user.key}-f:${canvasKey}`)
+            .then(() => {
+                props.updateNotification({ type: 'green', msg: 'Link Copied to Clipboard.' })
+            }).catch(() => {
+                props.updateNotification({ type: 'red', msg: 'Something went wrong. Please Try Again.' })
+            });
     }
 
     const downloadImage = () => {
         const a = document.createElement('a');
         a.href = canvasToShow.content;
-        a.download = `${canvasToShow.name} by ${window.location.host}.jpg`;
+        a.download = `${canvasToShow.name}-by-${window.location.host}.jpg`;
         a.click();
     }
 
@@ -103,7 +133,7 @@ export default function CanvasShowPage(props) {
 
             <section id="qc_tb_canvasShowPageHead">
                 <div id="qc_tb_csphLeft">
-                    <button className='qc_tb_btns' onClick={() => navigate(window.history.length > 1 ? -1 : '/')}>
+                    <button className='qc_tb_btns' onClick={() => navigate('/home')}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                             <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
                         </svg>
@@ -113,7 +143,7 @@ export default function CanvasShowPage(props) {
                     <div id="qc_tb_cspNameCont">{canvasToShow?.name}</div>
                 </div>
                 <div id="qc_tb_csphRight">
-                    <button id="qc_tb_optionBtn" className={`qc_tb_btns ${optionBox === true ? 'active' : ''}`} onClick={() => setOptionBox(!optionBox)}>
+                    <button id="qc_tb_optionBtn" ref={optionBoxBtn} className={`qc_tb_btns ${optionBox ? 'active' : ''}`} onClick={() => setOptionBox(!optionBox)}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
                         </svg>

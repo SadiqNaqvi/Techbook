@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CSSTransition } from 'react-transition-group';
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../firebase";
+import Loading from "./Loading";
 
 export default function SettingFeedbackSection(props) {
 
@@ -10,25 +11,49 @@ export default function SettingFeedbackSection(props) {
     const [msgInput, setMsgInput] = useState('');
     const [thankBox, setThankBox] = useState(false);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState('');
 
     const saveFeedBack = () => {
+
+        // Check if the user is a valid user.
         if (props.user?.authProvider !== "guest") {
+
+            // Show a loading screen to the user for better experience and to prevent user from clicking the save button multiple times.
+            setLoading("Transition");
+
             const element = { rating: rating, msg: msgInput, user: props.user?.email }
+
+            // Show a thankyou pop-up to the user.
             setThankBox(true);
+
+            // Add the feedback to the database.
             addDoc(collection(db, 'feedback'), element)
                 .then(() => {
+                    props.updateNotification({ type: 'green', msg: 'Your feedback has been saved. Thank you again for your support.' });
+
+                    // Hide the thank you pop-up.
                     setThankBox(false);
+
+                    // Navigate the user to the setting page after 500ms, i.e. as soon as the thankyou pop-up is hidden which will be after 500ms.
                     setTimeout(() => navigate('/setting'), 500);
+
                 }).catch(err => {
+
                     console.error(err);
-                    props.updateNotification({ type: 'red', msg: 'Something went wrong! Please try again in some time.' });
+
+                    props.updateNotification({ type: 'red', msg: 'Something went wrong! Please try again.' });
                 });
+
+            setLoading('');
         } else
             navigate('/setting');
     }
 
     return (
         <div id="qc_tb_settingFeedbackSection">
+
+            {loading && <Loading use={loading} />}
+
             <CSSTransition in={thankBox} timeout={500} classNames="zoomIn" unmountOnExit>
                 <div id="qc_tb_feedbackThankingCont">
                     <div id="qc_tb_feedbackThankingBox">
@@ -40,6 +65,7 @@ export default function SettingFeedbackSection(props) {
             </CSSTransition>
 
             <div id="qc_tb_settingFeedbackCont">
+
                 <div id="qc_tb_feedbackCardRating">
                     <button className={rating > 4 ? 'active' : ''} onClick={() => setRating(5)}>
                         {rating > 4 ?
@@ -77,6 +103,7 @@ export default function SettingFeedbackSection(props) {
                         }
                     </button>
                 </div>
+
                 <div id="qc_tb_feedbackCardMsg">
                     <textarea value={msgInput}
                         placeholder=" 1. Tell us about your experience on our Web Application.
@@ -84,6 +111,7 @@ export default function SettingFeedbackSection(props) {
                     3. Suggestions?
                     4. What else should we do for your 5 Stars." onChange={e => setMsgInput(e.target.value)}></textarea>
                 </div>
+
                 <div id="qc_tb_feedbackCardFoot">
                     {rating > 0 ?
                         <button className="qc_tb_bigBtns" onClick={saveFeedBack}>Submit</button>

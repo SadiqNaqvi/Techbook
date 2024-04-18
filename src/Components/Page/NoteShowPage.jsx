@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import '../CSS/NoteShowPage.css'
-import 'react-quill/dist/quill.bubble.css';
+import base64 from '../font64';
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import Loading from '../Component/Loading';
 import { CSSTransition } from 'react-transition-group';
@@ -13,6 +13,7 @@ import { db } from '../firebase';
 export default function NoteShowPage(props) {
     const { noteKey } = useParams();
     const navigate = useNavigate();
+    const optionBoxBtn = useRef(null);
     const noteBody = useRef(null);
     const [loading, setLoading] = useState(true);
     const [noteToShow, setNoteToShow] = useState(null);
@@ -29,34 +30,48 @@ export default function NoteShowPage(props) {
     const [folderState, setFolderState] = useState('none');
 
     useEffect(() => {
+
         if (props.notesData && noteKey) {
+
+            // Check if the noteKey includes 'u:' and 'f:'. If yes, it is a shared note, else it is user's own note. Work accordingly.
             if (noteKey.includes('u:') && noteKey.includes('f:')) {
+
+                // Get user key and file key from noteKey for further process.
                 const userKey = noteKey.split('-')[0].replace('u:', '');
                 const fileKey = noteKey.split('-')[1].replace('f:', '');
+
+                // Check if the user is trying to open their own file using shared url and work accordingly.
                 if (props.user.authProvider !== 'guest' && props.user.key === userKey) {
-                    navigate(`/note/${fileKey}`);
+
+                    // Check if the file, the user is trying to access, exist or not and work accordingly.
                     const openedNote = props.notesData.find(el => el.key === fileKey);
+
                     if (openedNote) {
+                        navigate(`/note/${fileKey}`);
                         setNoteToShow(openedNote);
-                    } else { navigate('/home') }
+                    } else {
+                        navigate('/home');
+                        props.updateNotification({ type: 'red', msg: "The file you're trying to access may no longer exist." });
+                    }
                 } else {
+
                     if (window.navigator.onLine) {
+
                         getDocs(collection(db, 'data', userKey, 'notesData'), fileKey)
                             .then(res => {
                                 if (!res.empty) {
                                     setNoteToShow(res.docs[0].data());
                                     setIsOwner(false);
                                 } else {
+                                    props.updateNotification({ type: 'red', msg: "The file you're trying to access may no longer exist." });
                                     navigate('/home');
                                 }
                             }).catch(err => {
                                 console.error(err);
                                 navigate('/home');
-                                props.updateNotification({ type: 'red', msg: 'Something went wrong!' })
+                                props.updateNotification({ type: 'red', msg: 'Something went wrong! Please try again.' })
                             });
-                    } else {
-                        navigate('/home')
-                    }
+                    } else navigate('/home');
                 }
             } else {
                 const openedNote = props.notesData.find(el => el.key === noteKey);
@@ -66,217 +81,220 @@ export default function NoteShowPage(props) {
             }
         }
 
+        // Get all the folders which has this file and store it in an array for faster and easier access.
         props.folderData && noteKey && props.folderData.forEach(folder => {
             folder.elements.includes(noteKey) && setFileFolder([...fileFolder, folder.key]);
         });
 
-
+        // Check if the user has chosen any background.
         if (props.noteBg !== 'none') {
+
             setIsBackground(true);
-            if (props.noteBg === 'input') {
+
+            // Check if he user has chosen their custom background or available backgrounds and work accordingly.
+            if (props.noteBg === 'input')
                 setBackgroundImg(props.customNoteBg);
-            } else {
+            else
                 setBackgroundImg(bgImg[parseInt(props.noteBg)]);
-            }
         }
 
+        // Get the last used Speech voice of the user and later start the speech with this voice to increase the experience of the user. 
         const fetchSpeechVoice = localStorage.getItem('QC-TB-SpeechVoice') || null;
 
-        if (fetchSpeechVoice !== null) {
-            if (navigator.onLine) {
-                setSpeechVoice(fetchSpeechVoice);
-            }
-        }
+        fetchSpeechVoice && navigator.onLine && setSpeechVoice(fetchSpeechVoice);
+
     }, []);
 
+    // A function which will convert quill class styling to inline style.
     const getContentWithInlineStyles = () => {
 
-        if (document.getElementsByClassName('ql-indent-1').length > 0) {
-            Array.from(document.getElementsByClassName('ql-indent-1')).forEach(node => {
-                node.style.paddingLeft = '3em';
-                node.classList.remove('ql-indent-1');
-            });
-        }
-        if (document.getElementsByClassName('ql-indent-2').length > 0) {
-            Array.from(document.getElementsByClassName('ql-indent-2')).forEach(node => {
-                node.style.paddingLeft = '6em';
-                node.classList.remove('ql-indent-2');
-            });
-        }
-        if (document.getElementsByClassName('ql-indent-3').length > 0) {
-            Array.from(document.getElementsByClassName('ql-indent-3')).forEach(node => {
-                node.style.paddingLeft = '9em';
-                node.classList.remove('ql-indent-3');
-            });
-        }
-        if (document.getElementsByClassName('ql-indent-4').length > 0) {
-            Array.from(document.getElementsByClassName('ql-indent-4')).forEach(node => {
-                node.style.paddingLeft = '12em';
-                node.classList.remove('ql-indent-4');
-            });
-        }
-        if (document.getElementsByClassName('ql-indent-5').length > 0) {
-            Array.from(document.getElementsByClassName('ql-indent-5')).forEach(node => {
-                node.style.paddingLeft = '15em';
-                node.classList.remove('ql-indent-5');
-            });
-        }
-        if (document.getElementsByClassName('ql-indent-6').length > 0) {
-            Array.from(document.getElementsByClassName('ql-indent-6')).forEach(node => {
-                node.style.paddingLeft = '18em';
-                node.classList.remove('ql-indent-6');
-            });
-        }
-        if (document.getElementsByClassName('ql-indent-7').length > 0) {
-            Array.from(document.getElementsByClassName('ql-indent-7')).forEach(node => {
-                node.style.paddingLeft = '21em';
-                node.classList.remove('ql-indent-7');
-            });
-        }
-        if (document.getElementsByClassName('ql-indent-8').length > 0) {
-            Array.from(document.getElementsByClassName('ql-indent-8')).forEach(node => {
-                node.style.paddingLeft = '24em';
-                node.classList.remove('ql-indent-8');
-            });
-        }
-        if (document.getElementsByClassName('ql-align-center').length > 0) {
-            Array.from(document.getElementsByClassName('ql-align-center')).forEach(node => {
-                node.style.textAlign = 'center';
-                node.classList.remove('ql-align-center');
-            });
-        }
-        if (document.getElementsByClassName('ql-align-right').length > 0) {
-            Array.from(document.getElementsByClassName('ql-align-right')).forEach(node => {
-                node.style.textAlign = 'right';
-                node.classList.remove('ql-align-right');
-            });
-        }
-        if (document.getElementsByClassName('ql-align-justify').length > 0) {
-            Array.from(document.getElementsByClassName('ql-align-justify')).forEach(node => {
-                node.style.textAlign = 'justify';
-                node.classList.remove('ql-align-justify');
-            });
-        }
-        if (document.getElementsByTagName('ol').length > 0) {
-            Array.from(document.getElementsByTagName('ol')).forEach(node => {
-                node.style.paddingLeft = '1.5em'
-            })
-        }
-        if (document.getElementsByTagName('ul').length > 0) {
-            Array.from(document.getElementsByTagName('ul')).forEach(node => {
-                node.style.paddingLeft = '1.5em'
-            })
-        }
-        if (document.getElementsByClassName('ql-size-small').length > 0) {
-            Array.from(document.getElementsByClassName('ql-size-small')).forEach(node => {
-                node.style.fontSize = '0.75em';
-            });
-        }
-        if (document.getElementsByClassName('ql-size-large').length > 0) {
-            Array.from(document.getElementsByClassName('ql-size-large')).forEach(node => {
-                node.style.fontSize = '1.5em';
-            });
-        }
-        if (document.getElementsByClassName('ql-size-huge').length > 0) {
-            Array.from(document.getElementsByClassName('ql-size-huge')).forEach(node => {
-                node.style.fontSize = '2.5em';
-            });
-        }
+        Array.from(document.getElementsByClassName('ql-indent-1')).forEach(node => {
+            node.style.paddingLeft = '3em'; node.classList.remove('ql-indent-1');
+        });
+        Array.from(document.getElementsByClassName('ql-indent-2')).forEach(node => {
+            node.style.paddingLeft = '6em'; node.classList.remove('ql-indent-2');
+        });
+        Array.from(document.getElementsByClassName('ql-indent-3')).forEach(node => {
+            node.style.paddingLeft = '9em';
+            node.classList.remove('ql-indent-3');
+        });
+        Array.from(document.getElementsByClassName('ql-indent-4')).forEach(node => {
+            node.style.paddingLeft = '12em';
+            node.classList.remove('ql-indent-4');
+        });
+        Array.from(document.getElementsByClassName('ql-indent-5')).forEach(node => {
+            node.style.paddingLeft = '15em';
+            node.classList.remove('ql-indent-5');
+        });
+        Array.from(document.getElementsByClassName('ql-indent-6')).forEach(node => {
+            node.style.paddingLeft = '18em';
+            node.classList.remove('ql-indent-6');
+        });
+        Array.from(document.getElementsByClassName('ql-indent-7')).forEach(node => {
+            node.style.paddingLeft = '21em';
+            node.classList.remove('ql-indent-7');
+        });
+        Array.from(document.getElementsByClassName('ql-indent-8')).forEach(node => {
+            node.style.paddingLeft = '24em';
+            node.classList.remove('ql-indent-8');
+        });
+        Array.from(document.getElementsByClassName('ql-align-center')).forEach(node => {
+            node.style.textAlign = 'center';
+            node.classList.remove('ql-align-center');
+        });
+        Array.from(document.getElementsByClassName('ql-align-right')).forEach(node => {
+            node.style.textAlign = 'right';
+            node.classList.remove('ql-align-right');
+        });
+        Array.from(document.getElementsByClassName('ql-align-justify')).forEach(node => {
+            node.style.textAlign = 'justify';
+            node.classList.remove('ql-align-justify');
+        });
+
+        Array.from(document.getElementsByTagName('ol')).forEach(node => {
+            node.style.paddingLeft = '1.5em'
+        });
+
+        Array.from(document.getElementsByTagName('ul')).forEach(node => {
+            node.style.paddingLeft = '1.5em'
+        });
+
+        Array.from(document.getElementsByClassName('ql-size-small')).forEach(node => {
+            node.style.fontSize = '0.75em';
+        });
+
+        Array.from(document.getElementsByClassName('ql-size-large')).forEach(node => {
+            node.style.fontSize = '1.5em';
+        });
+
+        Array.from(document.getElementsByClassName('ql-size-huge')).forEach(node => {
+            node.style.fontSize = '2.5em';
+        });
     };
 
     useEffect(() => {
         if (noteBody.current && noteToShow) {
+            // As soon as the noteToShow is assigned a valid value, set the content of the note in the noteBody.
             noteBody.current.innerHTML = noteToShow.advanceContent;
+
+            // convert the quill class style to inline css so we can easily export the note content into PDF.
             getContentWithInlineStyles();
+
             setLoading(false);
         }
     }, [noteBody.current, noteToShow]);
 
     useEffect(() => {
-        document.body.addEventListener('click', () => (moreBoxOpen && document.activeElement !== document.querySelector('#qc_tb_nphRight .qc_tb_btns')) && setMoreBoxOpen(false));
 
-        return () => document.body.removeEventListener('click', () => (moreBoxOpen && document.activeElement !== document.querySelector('#qc_tb_sphRight .qc_tb_btns')) && setMoreBoxOpen(false));
+        // If moreBox is open and user clicks anywhere on the body, close the more box.
+        const closeMoreBox = () => moreBoxOpen && document.activeElement !== optionBoxBtn.current && setMoreBoxOpen(false);
+
+        document.body.addEventListener('click', closeMoreBox);
+
+        return () => document.body.removeEventListener('click', closeMoreBox);
     }, [moreBoxOpen]);
 
     const handleManageFolder = () => {
-        props.folderData.length > 0 ? setFolderState('update') : setFolderState('new');
-        setManagingFolder(true);
+
+        // Check if there are folders created by the user or not. If yes then show the list of these folders. If no then show a container where user can create a folder.
+        props.folderData.length ? setFolderState('update') : setFolderState('new');
+
+        setManagingFolder(true); //Set this to true so the manage folder container pops up into view.
     }
 
     const copyLinkToClipboard = () => {
-        navigator.clipboard.writeText(`${window.location.origin}/note/u:${props.user.key}-f:${noteKey}`).then(() => {
-            props.updateNotification({ type: 'green', msg: 'Link Copied to Clipboard.' })
-
-        }).catch(() => {
-            props.updateNotification({ type: 'red', msg: 'Something went wrong. Please Try Again.' })
-        });
+        navigator.clipboard.writeText(`${window.location.origin}/note/u:${props.user.key}-f:${noteKey}`)
+            .then(() => {
+                props.updateNotification({ type: 'green', msg: 'Link Copied to Clipboard.' })
+            }).catch(() => {
+                props.updateNotification({ type: 'red', msg: 'Something went wrong. Please Try Again.' })
+            });
     }
 
     const copyContentToClipboard = () => {
-        navigator.clipboard.writeText(noteToShow.content).then(() => {
-            props.updateNotification({ type: 'green', msg: 'Content Copied to Clipboard.' })
-
-        }).catch(() => {
-            props.updateNotification({ type: 'red', msg: 'Something went wrong. Please Try Again.' })
-        });
+        navigator.clipboard.writeText(noteToShow.content)
+            .then(() => {
+                props.updateNotification({ type: 'green', msg: 'Content Copied to Clipboard.' })
+            }).catch(() => {
+                props.updateNotification({ type: 'red', msg: 'Something went wrong. Please Try Again.' })
+            });
     }
 
     const convertToPDF = () => {
+
+        // Create a new jsPDF instance.
         const doc = new jsPDF();
-        doc.setFont('helvetica');
+
+        // Define font size and font family.
+        doc.addFileToVFS("Raleway-Medium-normal.ttf", base64());
+        doc.addFont("Raleway-Medium-normal.ttf", "Raleway-Medium", "normal");
+        doc.setFont('Raleway-Medium');
         doc.setFontSize(16);
 
+        // Convert Note into PDF and export pdf.
         doc.html(noteBody.current.innerHTML, {
             callback: (doc) => {
-                doc.save(`${noteToShow.name.replaceAll(' ', '-')}.pdf`);
+                doc.save(`${noteToShow.name.replaceAll(' ', '-')}-by-${window.location.host}.pdf`);
             },
             x: 10,
             y: 10,
             width: 170,
             windowWidth: 650
-        }).then(() => {
-            props.updateNotification({ type: 'green', msg: 'Note Exported Successfully.' })
+        })
+            .then(() => {
+                props.updateNotification({ type: 'green', msg: 'Note Exported Successfully.' })
+            }).catch(() => {
+                props.updateNotification({ type: 'red', msg: 'Something went wrong. Please Try Again.' })
+            });
 
-        }).catch(() => {
-            props.updateNotification({ type: 'red', msg: 'Something went wrong. Please Try Again.' })
-        });
     };
 
     const convertToHTML = () => {
         const blob = new Blob([noteToShow.content], { type: 'text/html' });
 
-        // Create a temporary URL to the Blob
+        // Create a temporary URL to the Blob.
         const url = URL.createObjectURL(blob);
 
-        // Create a link to trigger the download
+        // Create a link to trigger the download.
         const a = document.createElement('a');
         a.href = url;
         a.download = `${noteToShow.name.replaceAll(' ', '-')}.html`;
 
-        // Trigger the download
+        // Trigger the download.
         document.body.appendChild(a);
         a.click();
 
-        // Clean up the temporary URL
+        // Clean up the temporary URL.
         URL.revokeObjectURL(url);
     }
 
-    const handleListenState = () => {
+    const toggleListenState = () => {
+
+        // If the speech sythesis is on active mode then stop it else start it.
         if (noteListenState !== 'stop') {
+
             setNoteListenState('stop');
             window.speechSynthesis.cancel();
+
         } else {
+
+            // Cancel the speech synthesis before starting it to remove any bug if exist. 
             window.speechSynthesis.cancel();
+
             speech.text = noteToShow.content;
-            let voices = window.speechSynthesis.getVoices().filter(voice => !voice.name.includes('Google'))
+
+            // Get all the voices expect the ones provided by Google because they have bugs which makes the speech stop after 15 to 22 seconds.
+            const voices = window.speechSynthesis.getVoices().filter(voice => !voice.name.includes('Google'))
+
+            // Set user's last used Speech voice as the current voice.
             speech.voice = voices[speechVoice];
+
+            // Start Speech and handle events related to it.
             window.speechSynthesis.speak(speech);
-            speech.addEventListener('start', () => {
-                setNoteListenState('play');
-            });
-            speech.addEventListener('end', () => {
-                setNoteListenState('stop');
-            });
+
+            speech.addEventListener('start', () => setNoteListenState('play'));
+
+            speech.addEventListener('end', () => setNoteListenState('stop'));
         };
     }
 
@@ -292,16 +310,22 @@ export default function NoteShowPage(props) {
     }
 
     const speechVoiceChange = (e) => {
+
+        // Get all the voices expect the ones provided by Google because they have bugs which makes the speech stop after 15 to 22 seconds.
         const availableVoices = window.speechSynthesis.getVoices().filter(voice => !voice.name.includes('Google'));
+
+        // Select the chosen voice
         speech.voice = availableVoices[e.target.value];
+
+        // Update the last used voice state and store the value in localstorage for later use.
         setSpeechVoice(e.target.value);
         localStorage.setItem('QC-TB-SpeechVoice', e.target.value);
     }
 
-    const handlespeechSettingBoxBox = () => {
-        if (speechSettingBox) {
+    const handleSpeechSettingBox = () => {
+        if (speechSettingBox)
             setspeechSettingBox(false);
-        } else {
+        else {
             setspeechSettingBox(true);
             setNoteListenState('stop');
             window.speechSynthesis.cancel();
@@ -312,11 +336,12 @@ export default function NoteShowPage(props) {
         <>
             {loading && <Loading use='loading' />}
 
-            <div id="qc_tb_notePage" className={`${isBackground ? 'qc_tb_bgImgBackdropFilter' : ''}`} style={isBackground ? { backgroundImage: `url(${backgroundImg})` } : null}>
+            <main id="qc_tb_notePage" className={`${isBackground ? 'qc_tb_bgImgBackdropFilter' : ''}`} style={isBackground ? { backgroundImage: `url(${backgroundImg})` } : null}>
+
                 <CSSTransition in={speechSettingBox} timeout={500} classNames="slideDown" unmountOnExit>
                     <section id="qc_tb_npListenSettingCont">
                         <div id="qc_tb_npListenSettingBox">
-                            <button id="qc_tb_npListenboxCloseBtn" onClick={handlespeechSettingBoxBox}>
+                            <button id="qc_tb_npListenboxCloseBtn" onClick={handleSpeechSettingBox}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
                                 </svg>
@@ -335,7 +360,8 @@ export default function NoteShowPage(props) {
 
                 {managingFolder && <AddToFolder folderData={props.folderData} updateFolderData={props.updateFolderData} fileKey={noteKey} fileFolder={fileFolder} state={folderState} fileName={noteToShow.name} fileType={'note'} closeComponent={() => setManagingFolder(false)} />}
 
-                <section id="qc_tb_npHead">
+                <header id="qc_tb_npHead">
+
                     <div id="qc_tb_nphLeft">
                         <button id="qc_tb_npExitBtn" className="qc_tb_btns" onClick={() => navigate(window.history.length > 1 ? -1 : '/home')}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
@@ -343,18 +369,20 @@ export default function NoteShowPage(props) {
                             </svg>
                         </button>
                     </div>
+
                     <div id="qc_tb_nphMiddle">
                         <div id="qc_tb_nphNoteName">{noteToShow?.name}</div>
                     </div>
+
                     <div id="qc_tb_nphRight">
-                        <button id="qc_tb_npMoreBtn" className={`qc_tb_btns ${moreBoxOpen === true && 'active'}`} onClick={() => setMoreBoxOpen(!moreBoxOpen)}>
+                        <button id="qc_tb_npMoreBtn" ref={optionBoxBtn} className={`qc_tb_btns ${moreBoxOpen ? 'active' : ''}`} onClick={() => setMoreBoxOpen(!moreBoxOpen)}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
                             </svg>
                         </button>
                         <CSSTransition in={moreBoxOpen} timeout={500} classNames="slideDown" unmountOnExit>
                             <div id="qc_tb_spOptionBox">
-                                {isOwner && (
+                                {isOwner &&
                                     <>
                                         <button className="qc_tb_spOptionBtns" onClick={() => props.updateNotesData('like', noteToShow)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
@@ -402,7 +430,7 @@ export default function NoteShowPage(props) {
                                                 }
                                             </button>
                                         }
-                                        <button className="qc_tb_spOptionBtns" onClick={() => props.updateNotification({ msg: `Are you sure you want to delete '${noteToShow.name}'?`, greenMsg: 'Cancel', redMsg: 'Delete', func: () => props.updateNotesData('delete', noteToShow, () => navigate('/home')) })}>
+                                        <button className="qc_tb_spOptionBtns" onClick={() => props.updateWarning({ show: true, msg: `Are you sure you want to delete '${noteToShow.name}'?`, greenMsg: 'Cancel', redMsg: 'Delete', func: () => props.updateNotesData('delete', noteToShow, () => navigate('/home')) })}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512">
                                                 <path d="M164.2 39.5L148.9 64H299.1L283.8 39.5c-2.9-4.7-8.1-7.5-13.6-7.5H177.7c-5.5 0-10.6 2.8-13.6 7.5zM311 22.6L336.9 64H384h32 16c8.8 0 16 7.2 16 16s-7.2 16-16 16H416V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V96H16C7.2 96 0 88.8 0 80s7.2-16 16-16H32 64h47.1L137 22.6C145.8 8.5 161.2 0 177.7 0h92.5c16.6 0 31.9 8.5 40.7 22.6zM64 96V432c0 26.5 21.5 48 48 48H336c26.5 0 48-21.5 48-48V96H64zm80 80V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V176c0-8.8 7.2-16 16-16s16 7.2 16 16zm96 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V176c0-8.8 7.2-16 16-16s16 7.2 16 16zm96 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V176c0-8.8 7.2-16 16-16s16 7.2 16 16z"></path>
                                             </svg>
@@ -421,7 +449,7 @@ export default function NoteShowPage(props) {
                                             Manage Folder
                                         </button>
                                     </>
-                                )}
+                                }
                                 <button className="qc_tb_spOptionBtns" onClick={convertToPDF}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                                         <path fillRule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM1.6 11.85H0v3.999h.791v-1.342h.803c.287 0 .531-.057.732-.173.203-.117.358-.275.463-.474a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.476-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.38.574.574 0 0 1-.238.241.794.794 0 0 1-.375.082H.788V12.48h.66c.218 0 .389.06.512.181.123.122.185.296.185.522Zm1.217-1.333v3.999h1.46c.401 0 .734-.08.998-.237a1.45 1.45 0 0 0 .595-.689c.13-.3.196-.662.196-1.084 0-.42-.065-.778-.196-1.075a1.426 1.426 0 0 0-.589-.68c-.264-.156-.599-.234-1.005-.234H3.362Zm.791.645h.563c.248 0 .45.05.609.152a.89.89 0 0 1 .354.454c.079.201.118.452.118.753a2.3 2.3 0 0 1-.068.592 1.14 1.14 0 0 1-.196.422.8.8 0 0 1-.334.252 1.298 1.298 0 0 1-.483.082h-.563v-2.707Zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638H7.896Z" />
@@ -437,32 +465,41 @@ export default function NoteShowPage(props) {
                             </div>
                         </CSSTransition>
                     </div>
-                </section>
+                </header>
 
                 <section id="qc_tb_npBody" ref={noteBody}></section>
 
-                <section id="qc_tb_npFoot">
+                <footer id="qc_tb_npFoot">
+
                     <div id="qc_tb_npfLeft">
+
                         <span id="qc_tb_npLettersCount">Letters :
                             <span className="qc_tb_numberFont">{noteToShow?.content.trim().length}</span>
                         </span>
+
                         <span id="qc_tb_npWordsCount">Words :
-                            <span className="qc_tb_numberFont">{noteToShow?.content.trim().length === 0 ? 0 : noteToShow?.content.trim().split(/\s+/).length}</span>
+                            <span className="qc_tb_numberFont">{noteToShow?.content.trim().length ? noteToShow?.content.trim().split(/\s+/).length : 0}</span>
                         </span>
                     </div>
+
                     <div id="qc_tb_npfMiddle">
                         <div id="qc_tb_npfCreationDate">Created at :
                             <span className="qc_tb_numberFont">{new Date(noteToShow?.date).toLocaleDateString()}</span>
                         </div>
                     </div>
+
                     <div id="qc_tb_npfRight">
+                        
                         <div id="qc_tb_nphListenBox">
-                            <button id="qc_tb_npListenBtn" className={`${noteListenState !== 'stop' ? 'active' : ''} qc_tb_btns tooltip tooltipTop`} data-tooltipcontent={noteListenState === 'stop' ? "Speak" : "Speaking"} onClick={handleListenState}>
+
+                            <button id="qc_tb_npListenBtn" className={`${noteListenState !== 'stop' ? 'active' : ''} qc_tb_btns tooltip tooltipTop`} data-tooltipcontent={noteListenState === 'stop' ? "Speak" : "Speaking"} onClick={toggleListenState}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                                     <path fillRule="evenodd" d="M6.825 4.138c.596 2.141-.36 3.593-2.389 4.117a4.432 4.432 0 0 1-2.018.054c-.048-.01.9 2.778 1.522 4.61l.41 1.205a.52.52 0 0 1-.346.659l-.593.19a.548.548 0 0 1-.69-.34L.184 6.99c-.696-2.137.662-4.309 2.564-4.8 2.029-.523 3.402 0 4.076 1.948zm-.868 2.221c.43-.112.561-.993.292-1.969-.269-.975-.836-1.675-1.266-1.563-.43.112-.561.994-.292 1.969.269.975.836 1.675 1.266 1.563zm3.218-2.221c-.596 2.141.36 3.593 2.389 4.117a4.434 4.434 0 0 0 2.018.054c.048-.01-.9 2.778-1.522 4.61l-.41 1.205a.52.52 0 0 0 .346.659l.593.19c.289.092.6-.06.69-.34l2.536-7.643c.696-2.137-.662-4.309-2.564-4.8-2.029-.523-3.402 0-4.076 1.948zm.868 2.221c-.43-.112-.561-.993-.292-1.969.269-.975.836-1.675 1.266-1.563.43.112.561.994.292 1.969-.269.975-.836 1.675-1.266 1.563z" />
                                 </svg>
                             </button>
+
                             <div id="qc_tb_nphListenOptions" className={noteListenState !== 'stop' ? 'qc_tb_nphListenOptions_open' : ''}>
+                                
                                 <button className="qc_tb_nphListenOptionBtn" onClick={handlePlayPauseChange}>
                                     {noteListenState === 'play' ?
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
@@ -474,20 +511,23 @@ export default function NoteShowPage(props) {
                                         </svg>
                                     }
                                 </button>
-                                <button id="qc_tb_npSettingBtn" className="qc_tb_nphListenOptionBtn" onClick={handlespeechSettingBoxBox}>
+                                
+                                <button id="qc_tb_npSettingBtn" className="qc_tb_nphListenOptionBtn" onClick={handleSpeechSettingBox}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
                                     </svg>
                                 </button>
                             </div>
                         </div>
+
                         <button className="qc_tb_btns tooltip tooltipTop" data-tooltipcontent="Copy Content" onClick={copyContentToClipboard}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
                                 <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
                             </svg>
                         </button>
-                        {isOwner ?
+
+                        {isOwner &&
                             <Link to="edit">
                                 <button id="qc_tb_npEditBtn" className="qc_tb_btns">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
@@ -495,11 +535,10 @@ export default function NoteShowPage(props) {
                                     </svg>
                                 </button>
                             </Link>
-                            : null
                         }
                     </div>
-                </section>
-            </div >
+                </footer>
+            </main>
         </>
     )
 }

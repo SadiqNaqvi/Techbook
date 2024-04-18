@@ -1,13 +1,13 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import '../CSS/FolderPage.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-// import Loading from '../Component/Loading';
 
 export default function FolderPage(props) {
     const { selectedFolder } = useParams();
     const navigate = useNavigate();
+    const optionBoxBtn = useRef(null)
     const [dataBase, setDataBase] = useState([]);
     const [folderName, setFolderName] = useState('');
     const [creatingFolder, setCreatingFolder] = useState(false);
@@ -18,17 +18,21 @@ export default function FolderPage(props) {
     const [newFolderElements, setNewFolderElements] = useState([]);
     const [updateFolderName, setUpdateFolderName] = useState('')
     const [updateFolderElements, setUpdateFolderElements] = useState([]);
-    // const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        // Store both notes and canvas data in a single state for faster and easier access. 
         setDataBase([...props.notesData, ...props.canvasData].sort((a, b) => a.name.localeCompare(b.name)));
     }, [])
 
     useEffect(() => {
+
+        // Close all the pop-up conainers before performing any task.
         setCreatingFolder(false);
         setEditingFolder(false);
         setOptionBoxState(false);
-        if (selectedFolder && dataBase.length > 0) {
+
+        // Filter the dataBase array according to the selected Folder and show the data accordingly.
+        if (selectedFolder && dataBase.length) {
             let tempElements = [];
             if (selectedFolder === 'favourite') {
                 setFolderName('Favourite');
@@ -40,6 +44,7 @@ export default function FolderPage(props) {
                 setFolderName('Archive');
                 tempElements = dataBase.filter(el => el.archive === true);
             } else {
+
                 const folderToShow = props.folderData.find(el => el.key === selectedFolder);
                 if (folderToShow) {
                     setFolderName(folderToShow.name);
@@ -48,7 +53,7 @@ export default function FolderPage(props) {
                         tempElements.push(dataBase.find(el => el.key === key));
                     })
                     setUpdateFolderElements(tempElements);
-                } else navigate('/folder')
+                } else navigate('/folder');
 
             }
             setFolderElements(tempElements);
@@ -56,57 +61,61 @@ export default function FolderPage(props) {
     }, [selectedFolder, dataBase]);
 
     useEffect(() => {
-        document.body.addEventListener('click', () => (optionBoxState && document.activeElement !== document.querySelector('#qc_tb_flrhRight .qc_tb_btns')) && setOptionBoxState(false));
+        // Add click event listener to body as soon as the option box turns open so when the user clicks anywhere within the body, the option box get closed.
+        const closeOptionBox = () => optionBoxState && document.activeElement !== optionBoxBtn.current && setOptionBoxState(false)
 
-        return () => document.body.removeEventListener('click', () => (optionBoxState && document.activeElement !== document.querySelector('#qc_tb_sphRight .qc_tb_btns')) && setOptionBoxState(false));
+        document.body.addEventListener('click', closeOptionBox);
+
+        return () => document.body.removeEventListener('click', closeOptionBox);
     }, [optionBoxState])
 
-    const addElementsToNewFolder = (key) => {
-        let tempCont = [...newFolderElements];
-        if (tempCont.includes(key)) {
-            tempCont = tempCont.filter(el => el !== key);
-        } else {
-            tempCont.push(key);
-        }
-        setNewFolderElements(tempCont);
+    const toggleFilesToNewFolder = (key) => {
+
+        // A simple function which checks if the selected file is already chosen to be in the new folder or not and works accordingly.
+        if (newFolderElements.includes(key))
+            setNewFolderElements(newFolderElements.filter(el => el !== key));
+        else
+            setNewFolderElements([...newFolderElements, key]);
     }
 
-    const addElementsToUpdatingFolder = (el) => {
-        let tempCont = [...updateFolderElements];
-        if (tempCont.includes(el)) {
-            tempCont = tempCont.filter(ele => ele !== el);
-        } else {
-            tempCont.push(el);
-        }
-        setUpdateFolderElements(tempCont);
+    const toggleFilesToExistingFolder = (el) => {
+
+        if (updateFolderElements.includes(el))
+            setUpdateFolderElements(updateFolderElements.filter(ele => ele !== el));
+        else
+            setUpdateFolderElements([...updateFolderElements, el]);
     }
 
     const addNewFolder = () => {
+
         const folder = {
             name: newFolderName,
             elements: newFolderElements,
             type: 'folder',
             key: uuidv4().replaceAll('-', ''),
-            date: new Date().toString()
+            date: new Date().toString(),
         }
+
+        // Send the file along with the callback to the Global Update Folder function to work on this file accordingly.
         props.updateFolderData({
             use: 'create', folder: folder, callBack: () => { setCreatingFolder(false); setNewFolderElements([]); setNewFolderName(''); }
         });
 
     }
 
-    const deleteFolder = () => {
-        props.updateFolderData({ use: 'delete', key: selectedFolder, callBack: () => navigate('/folder') });
-    }
+    const deleteFolder = () => props.updateFolderData({ use: 'delete', key: selectedFolder, callBack: () => navigate('/folder') });
 
     const updateFolder = () => {
-        let selected = props.folderData.find(el => el.key === selectedFolder);
-        const keyArray = [];
-        updateFolderElements.forEach(el => keyArray.push(el.key))
+
+        const selected = props.folderData.find(el => el.key === selectedFolder);
+
+        const keyArray = updateFolderElements.map(el => el.key);
+
         props.updateFolderData({
             use: 'update',
             folder: { name: updateFolderName, elements: keyArray, key: selectedFolder, date: selected.date }
         });
+
         setFolderName(updateFolderName);
         setFolderElements(updateFolderElements);
         setEditingFolder(false);
@@ -116,22 +125,26 @@ export default function FolderPage(props) {
         <main id='qc_tb_container'>
 
             <CSSTransition in={creatingFolder} timeout={500} classNames="zoomIn" unmountOnExit>
+
                 <section id="qc_tb_createFolderOuter">
+
                     <div id="qc_tb_createFolderInner" className={dataBase.length ? 'full' : 'empty'}>
+
                         <div id="qc_tb_createFolderHead">
-                            <div id="qc_tb_cflhLeft"></div>
-                            <div id="qc_tb_cflhMiddle">
+                            <span id="qc_tb_cflhLeft"></span>
+                            <span id="qc_tb_cflhMiddle">
                                 <input type="text" value={newFolderName} autoFocus spellCheck="false" className="qc_tb_input" placeholder='Title' onChange={e => setNewFolderName(e.target.value)} />
-                            </div>
-                            <div id="qc_tb_cflhRight">
+                            </span>
+                            <span id="qc_tb_cflhRight">
                                 <button className="qc_tb_btns" onClick={() => { setCreatingFolder(false); setNewFolderElements([]); setNewFolderName(''); }}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 384 512"><path d="M324.5 411.1c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L214.6 256 347.1 123.5c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L192 233.4 59.5 100.9c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L169.4 256 36.9 388.5c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L192 278.6 324.5 411.1z"></path></svg>
                                 </button>
-                            </div>
+                            </span>
                         </div>
+
                         <ul id="qc_tb_createFolderBody">
                             {dataBase.map((el, ind) => (
-                                <li key={ind} className={`qc_tb_updateFolderTile ${newFolderElements.includes(el.key) ? 'checked' : ''}`} onClick={() => addElementsToNewFolder(el.key)}>
+                                <li key={ind} className={`qc_tb_updateFolderTile ${newFolderElements.includes(el.key) ? 'checked' : ''}`} onClick={() => toggleFilesToNewFolder(el.key)}>
                                     <div className="qc_tb_updfltileLeft">
                                         {el.type === 'note' ?
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M5 0h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2 2 2 0 0 1-2 2H3a2 2 0 0 1-2-2h1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1H1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1H3a2 2 0 0 1 2-2z"></path><path d="M1 6v-.5a.5.5 0 0 1 1 0V6h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V9h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 2.5v.5H.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1H2v-.5a.5.5 0 0 0-1 0z"></path></svg>
@@ -150,6 +163,7 @@ export default function FolderPage(props) {
                                 </li>
                             ))}
                         </ul>
+
                         <div id="qc_tb_createFolderFoot">
                             {newFolderName.length > 2 ?
                                 <button className="qc_tb_bigBtns" onClick={addNewFolder}>Create</button>
@@ -177,7 +191,7 @@ export default function FolderPage(props) {
                         </div>
                         <ul id="qc_tb_editFolderBody">
                             {dataBase.map((el, ind) => (
-                                <li key={ind} className={`qc_tb_updateFolderTile ${updateFolderElements.includes(el) ? 'checked' : ''}`} onClick={() => addElementsToUpdatingFolder(el)}>
+                                <li key={ind} className={`qc_tb_updateFolderTile ${updateFolderElements.includes(el) ? 'checked' : ''}`} onClick={() => toggleFilesToExistingFolder(el)}>
                                     <div className="qc_tb_updfltileLeft">
                                         {el.type === 'note' ?
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M5 0h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2 2 2 0 0 1-2 2H3a2 2 0 0 1-2-2h1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1H1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1H3a2 2 0 0 1 2-2z"></path><path d="M1 6v-.5a.5.5 0 0 1 1 0V6h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V9h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 2.5v.5H.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1H2v-.5a.5.5 0 0 0-1 0z"></path></svg>
@@ -266,16 +280,19 @@ export default function FolderPage(props) {
                     :
                     <>
                         <div id="qc_tb_folderRightHead">
+
                             <div id="qc_tb_flrhLeft">
                                 <button className="qc_tb_btns" onClick={() => navigate('/folder')}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"></path></svg>
                                 </button>
                             </div>
+
                             <div id="qc_tb_flrhMiddle">{folderName}</div>
+
                             <div id="qc_tb_flrhRight">
                                 {selectedFolder !== 'favourite' && selectedFolder !== 'archive' && selectedFolder !== 'offline' && selectedFolder !== 'draft' &&
                                     <>
-                                        <button className={`qc_tb_btns ${optionBoxState && 'active'}`} onClick={() => optionBoxState ? setOptionBoxState(false) : setOptionBoxState(true)}>
+                                        <button ref={optionBoxBtn} className={`qc_tb_btns ${optionBoxState ? 'active' : ''}`} onClick={() => setOptionBoxState(!optionBoxState)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512"><path d="M416 256a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm-160 0a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM64 288a32 32 0 1 1 0-64 32 32 0 1 1 0 64z"></path></svg>
                                         </button>
                                         <CSSTransition in={optionBoxState} timeout={500} classNames="slideDown" unmountOnExit>

@@ -22,20 +22,28 @@ export default function LoginPage(props) {
     const [loading, setLoading] = useState('loading');
 
     useEffect(() => {
+        // Navigate the user to homepage if the user is an active user, i.e. this user has signed up/loged in and is currently using the web app with their account, except the Guest User.
         const activeUser = JSON.parse(localStorage.getItem('QC-Techbook-ActiveUser'));
-        activeUser && activeUser?.authProvider !== "guest" && navigate('/home');
-        const el = JSON.parse(localStorage.getItem('QC-TB-SavedLoginArray')) || [];
-        setSavedLoginArray(el);
+        activeUser && activeUser.authProvider !== "guest" && navigate('/home');
+
+        // Fetch the array of the saved credential of the users for password-less sign-in method.
+        const arr = JSON.parse(localStorage.getItem('QC-Techbook-SavedLoginArray')) || [];
+        setSavedLoginArray(arr);
+
         setLoading('');
+
+        // Stop the user from going back to the previous page, so the user does not mistakenly move to the logout page. This will ensure the native experience for the user.
         window.history.pushState(null, null, window.location.href);
-        const handlePopState = () => {
-            window.history.go(1);
-        }
+
+        const handlePopState = () => window.history.go(1);
+
         window.addEventListener('popstate', handlePopState);
-        return () => window.removeEventListener('popstate', handlePopState);
+
+        return () => window.removeEventListener('popstate', handlePopState); //Remove the event listener as soon as this component unmount.
     }, []);
 
     const saveUser = (el, provider) => {
+
         const userElement = {
             name: el.displayName,
             avatar: el.photoURL,
@@ -45,134 +53,202 @@ export default function LoginPage(props) {
             createdAt: new Date(el.metadata.creationTime),
             key: el.uid
         }
+        // send the credentials of the user to be stored and reflected globally.
         props.changeUser(userElement);
     }
 
     const saveUserDataArray = (user) => {
+
+        // save some of the credentials of the user for password-less sign-in method.
         let element = [...savedLoginArray];
-        if (!element.find(el => el.email === user.email)) {
-            element.push({ email: user.email, avatar: user.avatar, uid: user.uid });
+
+        // check if the user's credentials are already saved or not and work accordingly.
+        if (!element.find(el => window.atob(el.email) === user.email)) {
+
+            element.push({
+                email: window.btoa(user.email),
+                avatar: user.avatar,
+                uid: window.btoa(user.uid)
+            });
+
             element.length > 10 && element.shift();
-            localStorage.setItem('QC-TB-SavedLoginArray', JSON.stringify(element));
+
+            localStorage.setItem('QC-Techbook-SavedLoginArray', JSON.stringify(element));
         }
     }
 
-    const removeSavedAccount = user => {
+    const removeSavedAccount = (user) => {
+        // Simple function to remove the saved credentials of the user.
         let element = [...savedLoginArray];
+
         element = element.filter(el => el.uid !== user.uid);
-        localStorage.setItem('QC-TB-SavedLoginArray', JSON.stringify(element));
+        localStorage.setItem('QC-Techbook-SavedLoginArray', JSON.stringify(element));
         setSavedLoginArray(element);
+
+        // if there is no saved credentials anymore, then move the user from savedCredentials container to Login container.
         element.length === 0 && setContainer('login');
     }
 
     const signInWithGoogle = () => {
-        setLoading('transition');
-        const googleProvider = new GoogleAuthProvider();
-        signInWithPopup(auth, googleProvider)
-            .then(res => {
-                const user = res.user;
-                saveUser(user, 'google');
-                getDocs(query(collection(db, "users"), where("email", "==", user.email)))
-                    .then(docs => {
-                        docs.empty && addDoc(collection(db, "users"), {
-                            uid: user.uid,
-                            name: user.displayName,
-                            authProvider: "google",
-                            email: user.email,
-                            avatar: user.photoURL,
-                            isVerified: user.emailVerified,
-                        });
-                    }).catch(() => {
-                        props.updateNotification({ type: 'red', msg: 'Something went wrong. Please refresh the page.' });
-                        setLoading('');
-                    })
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading('');
-                if (err.code.includes('account-exist'))
-                    props.updateNotification({ type: 'red', msg: 'Email already register. Try to Log-in with a different method.' });
-            })
+        if (navigator.onLine) {
+            // Set the loading to transition so the user will get to see a transition loading effect. This will increase the experience of the user and will prevent the user from clicking multiple times on the same button.
+            setLoading('transition');
+
+            // Create a new instance of Google Authentication Provider.
+            const googleProvider = new GoogleAuthProvider();
+
+            // Sign-in the user with a popup. This will pop-up a page where the user will sign-in with their respective google account.
+            signInWithPopup(auth, googleProvider)
+                .then(res => {
+
+                    // Now we have some part of the credentials of the signed-in user.
+                    const user = res.user;
+
+                    // Sent the user object and auth provider to the saveUser function. Now this user will be saved an called an active user.
+                    saveUser(user, 'google');
+
+                    // Save the credentials of this user in the firestore database if it is the first time this user is Signed-in.
+                    getDocs(query(collection(db, "users"), where("email", "==", user.email)))
+                        .then(docs => {
+                            docs.empty && addDoc(collection(db, "users"), {
+                                uid: user.uid,
+                                name: user.displayName,
+                                authProvider: "google",
+                                email: user.email,
+                                avatar: user.photoURL,
+                                isVerified: user.emailVerified,
+                            });
+                        }).catch((err) => {
+                            console.error(err)
+                            setLoading('');
+                            props.updateNotification({ type: 'red', msg: 'Something went wrong. If possible, please check the console and report this error with the screenshot of it from the console.' });
+                        })
+                })
+                .catch(err => {
+                    console.error(err);
+                    setLoading('');
+                    err.code.includes('account-exist') &&
+                        props.updateNotification({ type: 'red', msg: 'Email already register. Try to Log-in with a different method.' });
+                });
+        } else
+            props.updateNotification({ type: 'red', msg: "Seems like you're offline. Try again when you're online." });
     }
 
     const signInWithFacebook = () => {
-        setLoading('transition');
-        const facebookProvider = new FacebookAuthProvider();
-        signInWithPopup(auth, facebookProvider)
-            .then((res) => {
-                const user = res.user;
-                saveUser(user, 'facebook');
-                getDocs(query(collection(db, "users"), where("email", "==", user.email)))
-                    .then((docs) => {
-                        docs.empty && addDoc(collection(db, "users"), {
-                            uid: user.uid,
-                            name: user.displayName,
-                            authProvider: "facebook",
-                            email: user.email,
-                            avatar: user.photoURL,
-                            isVerified: user.emailVerified,
+        if (navigator.onLine) {
+
+            // Set the loading to transition so the user will get to see a transition loading effect. This will increase the experience of the user and will prevent the user from clicking multiple times on the same button.
+            setLoading('transition');
+
+            // Create a new instance of the Facebook Authentication Provider.
+            const facebookProvider = new FacebookAuthProvider();
+
+            // Sign-in the user with a popup. This will pop-up a page where the user will sign-in with their respective facebook account.
+            signInWithPopup(auth, facebookProvider)
+                .then((res) => {
+
+                    // Now we have some part of the credentials of the signed-in user.
+                    const user = res.user;
+
+                    // Sent the user object and auth provider to the saveUser function. Now this user will be saved an called an active user.
+                    saveUser(user, 'facebook');
+
+                    // Save the credentials of this user in the firestore database if it is the first time this user is Signed-in.
+                    getDocs(query(collection(db, "users"), where("email", "==", user.email)))
+                        .then((docs) => {
+                            docs.empty && addDoc(collection(db, "users"), {
+                                uid: user.uid,
+                                name: user.displayName,
+                                authProvider: "facebook",
+                                email: user.email,
+                                avatar: user.photoURL,
+                                isVerified: user.emailVerified,
+                            })
+                        }).catch(err => {
+                            console.error(err);
+                            setLoading('');
+                            props.updateNotification({ type: 'red', msg: 'Something went wrong. If possible, please check the console and report this error with the screenshot of it from the console.' });
                         })
-                    }).catch(err => {
-                        console.error(err);
-                    })
-            }).catch((err) => {
-                console.error(err);
-                setLoading('');
-                if (err.code.includes('account-exist'))
-                    props.updateNotification({ type: 'red', msg: 'Email already register. Try to Log-in with a different option.' });
-            })
+                }).catch((err) => {
+                    console.error(err);
+                    setLoading('');
+                    if (err.code.includes('account-exist'))
+                        props.updateNotification({ type: 'red', msg: 'Email already register. Try to Sign-in with a different method.' });
+                })
+        } else
+            props.updateNotification({ type: 'red', msg: "Seems like you're offline. Try again when you're online." });
     };
 
     const signInWithEmail = () => {
-        setLoading('transition');
+        if (navigator.onLine) {
 
-        getDocs(query(collection(db, "users"), where("email", "==", emailVal)))
-            .then(res => {
-                if (res.docs.length > 0) {
-                    const fetchedUser = res.docs[0].data();
-                    if (fetchedUser.authProvider === 'email') {
-                        if (fetchedUser.password === passwordVal) {
-                            const user = {
-                                avatar: fetchedUser.avatar,
-                                createdAt: fetchedUser.createdAt,
-                                email: fetchedUser.email,
-                                isVerified: fetchedUser.isVerified,
-                                name: fetchedUser.name,
-                                key: fetchedUser.uid,
+            // Set the loading to transition so the user will get to see a transition loading effect. This will increase the experience of the user and will prevent the user from clicking multiple times on the same button.
+            setLoading('transition');
+
+            // Check if there is any user with the provided email, if yes the proceed else show an error message.
+            getDocs(query(collection(db, "users"), where("email", "==", emailVal)))
+                .then(res => {
+                    if (res.docs.length) {
+
+                        const fetchedUser = res.docs[0].data();
+
+                        // Check if this user has signed-in with email or any other method and work accordingly.
+                        if (fetchedUser.authProvider === 'email') {
+
+                            // Check if the provided password matches passowrd of the fetched user, if yes then proceed else show an error message.
+                            if (fetchedUser.password === passwordVal) {
+                                const user = {
+                                    avatar: fetchedUser.avatar,
+                                    createdAt: fetchedUser.createdAt,
+                                    email: fetchedUser.email,
+                                    isVerified: fetchedUser.isVerified,
+                                    name: fetchedUser.name,
+                                    key: fetchedUser.uid,
+                                }
+
+                                // Now that the provided email and password matches the credentials of the fetched user, save the credentials of the user and now this will be the active user. 
+                                props.changeUser(user, "email");
+
+                                // If the remember me button is checked, save some part of the credentials of this user in an array in the localstorage for password-less signed-in method.
+                                rememberMeBtn && saveUserDataArray(user);
+                            } else {
+                                setLoading('');
+                                props.updateNotification({ type: 'red', msg: 'Incorrect Email or Password!' });
                             }
-                            props.changeUser(user, "email");
-                            rememberMeBtn && saveUserDataArray(user);
                         } else {
                             setLoading('');
-                            props.updateNotification({ type: 'red', msg: 'Incorrect Email or Password!' });
+                            props.updateNotification({ type: 'red', msg: 'Email is registered with a different login method.' });
                         }
                     } else {
                         setLoading('');
-                        props.updateNotification({ type: 'red', msg: 'Email is registered with a different login method.' });
+                        props.updateNotification({ type: 'red', msg: 'No User Found! Check your email and try again.' });
                     }
-                } else {
+                }).catch(error => {
                     setLoading('');
-                    props.updateNotification({ type: 'red', msg: 'No User Found! Check your email and try again.' });
-                }
-            }).catch(error => {
-                setLoading('');
-                console.error(error);
-                props.updateNotification({ type: 'red', msg: 'Something went wrong! Please try again.' })
-            })
+                    console.error(error);
+                    props.updateNotification({ type: 'red', msg: 'Something went wrong! Please try again.' })
+                })
+        } else
+            props.updateNotification({ type: 'red', msg: "Seems like you're offline. Try again when you're online." });
     }
 
     const loginInWithExistingAccount = (user) => {
         if (navigator.onLine) {
-            setLoading('');
 
-            getDocs(query(collection(db, "users"), where("email", "==", user.email)))
+            // Set the loading to transition so the user will get to see a transition loading effect. This will increase the experience of the user and will prevent the user from clicking multiple times on the same button.
+            setLoading('Transition');
+
+            // Check if there is a user with the provided email and if the user-id is same as the provided id.
+            getDocs(query(collection(db, "users"), where("email", "==", window.atob(user.email))))
                 .then(res => {
-                    if (res.docs.length > 0 && res.docs[0].data().uid === user.uid) {
+
+                    // Check if all the provided data matches with the data of fetched user. If yes, then save this user as active user. If no, then remove the credentials of this user and ask them to log-in again.
+                    if (res.docs.length && res.docs[0].data().uid === window.atob(user.uid)) {
                         const fetchedUser = res.docs[0].data();
                         props.changeUser(fetchedUser, "email");
                     } else {
                         setLoading('');
-                        setEmailVal(user.email);
+                        setEmailVal(window.atob(user.email));
                         setContainer('login');
                         props.updateNotification({ type: 'red', msg: 'Session expired! Please Log-in again.' });
                         removeSavedAccount(user);
@@ -182,9 +258,8 @@ export default function LoginPage(props) {
                     console.error(error);
                     props.updateNotification({ type: 'red', msg: "Something went wrong. Please try again!" })
                 })
-        } else {
-            props.updateNotification({ type: 'red', msg: "It seems like you're offline. Try again when you're online." })
-        }
+        } else
+            props.updateNotification({ type: 'red', msg: "Seems like you're offline. Try again when you're online." });
     }
 
     return (
@@ -195,17 +270,21 @@ export default function LoginPage(props) {
             <div id="qc_tb_loginPageLeft">
                 <h2>WELCOME BACK</h2>
             </div>
+            
             <div id="qc_tb_loginPageRight">
                 <SwitchTransition>
                     <CSSTransition key={container} timeout={300} classNames="slideRight">
                         {container === 'login' ?
                             <div id='qc_tb_loginCont'>
                                 <div id="qc_tb_loginBox">
-                                    <img src={appLogo} alt="" />
+
+                                    <img src={appLogo} alt="App Logo" />
+
                                     <div className="qc_tb_inputForm">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M256 32C132.3 32 32 132.3 32 256s100.3 224 224 224c8.8 0 16 7.2 16 16s-7.2 16-16 16C114.6 512 0 397.4 0 256S114.6 0 256 0S512 114.6 512 256v24c0 48.6-39.4 88-88 88c-33.4 0-62.5-18.7-77.4-46.1c-20.4 28-53.4 46.1-90.6 46.1c-61.9 0-112-50.1-112-112s50.1-112 112-112c31.3 0 59.7 12.9 80 33.6V176c0-8.8 7.2-16 16-16s16 7.2 16 16v80 24c0 30.9 25.1 56 56 56s56-25.1 56-56V256C480 132.3 379.7 32 256 32zm80 224a80 80 0 1 0 -160 0 80 80 0 1 0 160 0z"></path></svg>
                                         <input value={emailVal} type="email" autoFocus placeholder='Email' onChange={(e => setEmailVal(e.target.value))} onKeyUp={(e) => e.key === 'Enter' && passwordInput.current?.focus()} />
                                     </div>
+
                                     <div className="qc_tb_inputForm">
                                         <button onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')}>
                                             {inputType === 'password' ?
@@ -216,6 +295,7 @@ export default function LoginPage(props) {
                                         </button>
                                         <input ref={passwordInput} type={inputType} value={passwordVal} placeholder='Password' onChange={e => setPasswordVal(e.target.value)} />
                                     </div>
+
                                     <div id="qc_tb_loginHelpBox">
                                         <button id="qc_tb_loginRememberBtn" onClick={() => setRememberMeBtn(!rememberMeBtn)}>
                                             {rememberMeBtn ?
@@ -229,11 +309,13 @@ export default function LoginPage(props) {
                                             Forget Password?
                                         </Link>
                                     </div>
+
                                     {emailVal.length > 7 && emailVal.includes('@') && emailVal.includes('.com') && passwordVal.length > 7 ?
                                         <button id="main" className="qc_tb_loginBtns" onClick={signInWithEmail}>Log In</button>
                                         :
                                         <button id="disable" className="qc_tb_loginBtns">Log In</button>
                                     }
+
                                     <div id="qc_tb_loginPageSignupOption">New here?
                                         <Link to={'/signup'}>
                                             Sign Up
@@ -248,15 +330,18 @@ export default function LoginPage(props) {
                                 </div>
 
                                 <div id="qc_tb_loginOptionsBox">
+
                                     <button className="qc_tb_loginBtns" onClick={signInWithGoogle}>
                                         <img src={googleLogo} alt="" />
                                         Continue with Google
                                     </button>
+
                                     <button className="qc_tb_loginBtns" onClick={signInWithFacebook}>
                                         <img src={facebookLogo} alt="" />
                                         Continue with Facebook
                                     </button>
-                                    {savedLoginArray.length > 0 &&
+
+                                    {savedLoginArray.length &&
                                         <button className="qc_tb_loginBtns" onClick={() => setContainer('existing')}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M412.1 416.6C398.1 361.1 347.9 320 288 320H224c-59.9 0-110.1 41.1-124.1 96.6C58 375.9 32 319 32 256C32 132.3 132.3 32 256 32s224 100.3 224 224c0 63-26 119.9-67.9 160.6zm-28.5 23.4C347.5 465.2 303.5 480 256 480s-91.5-14.8-127.7-39.9c4-49.3 45.3-88.1 95.7-88.1h64c50.4 0 91.6 38.8 95.7 88.1zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-256a48 48 0 1 1 0-96 48 48 0 1 1 0 96zm-80-48a80 80 0 1 0 160 0 80 80 0 1 0 -160 0z"></path></svg>
                                             Log in to Existing accounts
@@ -266,12 +351,15 @@ export default function LoginPage(props) {
                             </div>
                             :
                             <div id="qc_tb_loginSavedAccountCont">
+
                                 <div id="qc_tb_savedAccountCardsCont">
                                     {savedLoginArray.map((el, ind) => (
                                         <div key={ind} className="qc_tb_savedAccountCard" onClick={() => loginInWithExistingAccount(el)}>
-                                            <button onClick={() => props.updateWarning({ show: true, msg: `Are you sure you want to remove credentials of account '${el.email}'?`, greenMsg: 'Cancel', redMsg: 'Remove', func: () => removeSavedAccount(el) })}>
+
+                                            <button onClick={() => props.updateWarning({ show: true, msg: `Are you sure you want to remove credentials of account '${window.atob(el.email)}'?`, greenMsg: 'Cancel', redMsg: 'Remove', func: () => removeSavedAccount(el) })}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512"><path d="M432 256c0 8.8-7.2 16-16 16L32 272c-8.8 0-16-7.2-16-16s7.2-16 16-16l384 0c8.8 0 16 7.2 16 16z"></path></svg>
                                             </button>
+
                                             <div className="qc_tb_savedAccountCardTop">
                                                 {el.avatar ?
                                                     <div className="userAvatar" style={{ backgroundImage: `url(${el.avatar})` }}></div>
@@ -279,13 +367,15 @@ export default function LoginPage(props) {
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M256 496c-54 0-103.9-17.9-144-48v0c0-61.9 50.1-112 112-112h64c61.9 0 112 50.1 112 112v0c5.3-4 10.4-8.2 15.4-12.6C409.1 370.6 354.5 320 288 320H224c-66.5 0-121.1 50.6-127.4 115.4C47.2 391.5 16 327.4 16 256C16 123.5 123.5 16 256 16s240 107.5 240 240s-107.5 240-240 240zm0 16A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm80-304a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zm-80-64a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"></path></svg>
                                                 }
                                             </div>
+
                                             <div className="qc_tb_savedAccountCardBottom">
-                                                <p>{el.email}</p>
+                                                <p>{window.atob(el.email)}</p>
                                             </div>
                                         </div>
                                     ))
                                     }
                                 </div>
+
                                 <div id="qc_tb_loginOptionsBox">
                                     <button className="qc_tb_loginBtns" onClick={() => setContainer('login')}>
                                         Log In with a new account

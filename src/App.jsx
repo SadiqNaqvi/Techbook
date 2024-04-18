@@ -25,15 +25,17 @@ export default function App() {
   const [isAppInstalled, setIsAppInstalled] = useState(true);
 
   useEffect(() => {
-
+    // Fetch User's Preference on darkmode.
     const autoDarkMode = JSON.parse(localStorage.getItem('QC-Techbook-AutoDarkMode') || true);
 
     if (autoDarkMode) {
+      // Apply darkmode if it is night else lightmode. 
       if (new Date().getHours() > 18 || new Date().getHours() < 6)
         setAppTheme('dark');
       else
         setAppTheme('light');
     } else {
+      // Apply User's Preference on App Theme.
       updateTheme(localStorage.getItem('QC-Techbook-AppTheme') || 'dark');
     }
 
@@ -51,9 +53,9 @@ export default function App() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     const activeUser = JSON.parse(localStorage.getItem('QC-Techbook-ActiveUser'));
-
     activeUser && setUser(activeUser);
 
+    // Set timeout of 1 sec to stop main loading. It is schedule after 1sec so the App Logo won't dissappear immediately.
     setTimeout(() => setLoading(false), 1000);
 
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -67,12 +69,13 @@ export default function App() {
 
   const showAppInstallPrompt = () => {
     if (appInstallPrompt) {
+
+      // Show prompt to install Web app.
       appInstallPrompt.prompt();
 
       appInstallPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
+        if (choiceResult.outcome === 'accepted')
           setIsAppInstalled(true);
-        }
       });
     }
   };
@@ -83,16 +86,16 @@ export default function App() {
     // if user !== null, which means user is not logged out, then navigate user to home page.
     user && navigate('/home');
 
-    //setting user data in the local storage so it will be faster to retrieve user data when needed.
+    //Store user data in the local storage for fast access.
     localStorage.setItem('QC-Techbook-ActiveUser', JSON.stringify(user));
   }
 
-  const updateWarning = (obj) => {
-    setWarning(obj);
-  }
+  const updateWarning = (obj) => setWarning(obj);
 
   const updateNotification = (obj) => {
     setNotification({ ...obj, show: true });
+
+    // Hide the in-app notification after a period of 4 seconds.
     setTimeout(() => setNotification({ ...obj, show: false }), 4000);
   }
 

@@ -8,7 +8,7 @@ import '../CSS/ResetPassword.css'
 import Loading from '../Component/Loading';
 
 export default function PasswordReset(props) {
-    
+
     const { passwordKey } = useParams();
     const [loading, setLoading] = useState('loading');
     const [container, setContainer] = useState('email');
@@ -20,120 +20,155 @@ export default function PasswordReset(props) {
     const navigate = useNavigate();
 
     useEffect(() => {
+
         if (passwordKey) {
+
+            //Get the userKey and UniqueKey from url parameter. 
             const userKey = passwordKey.split('-')[0]?.replace('u:', '');
             const uniqueKey = passwordKey.split('-')[1]?.replace('k:', '');
+
+            // Get the password reset key and the date user on which the user has requested to change their password.
             const passwordResetData = JSON.parse(localStorage.getItem('QC-Tb-PasswordResetData'));
-            if (userKey && uniqueKey && passwordResetData && passwordResetData?.key === uniqueKey && passwordResetData?.date === new Date().toLocaleDateString()) {
+
+            // password reset key matches the unique key in the url and the date on which the user has requested is today, then only proceed otherwise ask them to request again.
+            if (userKey && uniqueKey && passwordResetData && window.atob(passwordResetData.key) === uniqueKey && passwordResetData.date === new Date().toLocaleDateString()) {
+
+                // Check if there is any user with this userKey and the email of this user is same as in the passwordResetData object. If yes then proceed otherwise ask the user to request again. 
                 getDocs(query(collection(db, "users"), where("uid", "==", userKey))).then(docs => {
-                    if (docs.empty && docs?.docs[0]?.data()?.email !== passwordResetData?.email) {
-                        if (props.user) {
-                            navigate('/home');
-                        } else {
-                            navigate('/passwordReset');
-                            setLoading('');
-                        }
+                    if (docs.empty || docs?.docs[0]?.data()?.email !== window.atob(passwordResetData.email)) {
+
+                        // Navigate the user to home if active user exist otherwise navigate them to password reset page.
+                        props.user ? navigate('/home') : navigate('/passwordReset');
+
+                        // Remove the password Reset object from the localstorage and notify about session expiration. 
                         localStorage.removeItem('QC-Tb-PasswordResetData');
                         props.updateNotification({ type: 'red', msg: 'Session expired.' });
+
                     } else {
+
+                        // Store Matched User's data and key for faster and easier access.
                         setSelectedUser(docs?.docs[0]?.data());
                         setSelectedUserKey(docs?.docs[0]?.id);
+
+                        // Show the container where user can type new password and change it.
                         setContainer('password');
-                        setLoading('');
                     }
-                }).catch(() => {
-                    setLoading('');
-                    props.updateNotification({ type: 'red', msg: 'Something went wrong. Please refresh the page.' });
-                });
+                }).catch(() => props.updateNotification({ type: 'red', msg: 'Something went wrong. Please refresh the page.' }));
+
             } else {
-                if (props.user) {
-                    navigate('/home');
-                } else {
-                    navigate('/passwordReset');
-                    setLoading('');
-                }
+
+                // Navigate the user to home if active user exist otherwise naviget them to password reset page so they can request again.
+                props.user ? navigate('/home') : navigate('/passwordReset');
+
                 localStorage.removeItem('QC-Tb-PasswordResetData');
-                props.updateNotification({ type: 'red', msg: 'Session expired. Request another link.' });
+
+                props.updateNotification({ type: 'red', msg: 'Session expired! Please request again.' });
             }
-        } else {
-            setLoading('');
         }
+
+        setLoading('');
     }, []);
 
     const sendLink = () => {
+
         const passwordResetData = JSON.parse(localStorage.getItem('QC-Tb-PasswordResetData'));
-        if (passwordResetData?.email === emailVal) {
+
+        // Check if the same user is trying to request the password reset link again within the same day.
+        if (window.atob(passwordResetData?.email) === emailVal)
             props.updateNotification({ type: 'green', msg: 'The password reset link has already been sent to you. Please check your email.' });
-        } else {
+
+        else {
+
             if (window.navigator.onLine) {
+
+                // Set loading to transition which will not only increase user's experience but also prevent user from clicking the same button multiple times. 
                 setLoading('transition');
+
+                // Check if a user exist with the provided email.
                 getDocs(query(collection(db, "users"), where("email", "==", emailVal)))
                     .then(docs => {
+
                         if (docs.empty) {
                             setLoading('');
                             props.updateNotification({ type: 'red', msg: 'No user found with the given email.' });
                         } else {
+
                             const user = docs.docs[0].data();
+
+                            // If the user has signed-up with the email method then send them a password reset link.
                             if (user?.authProvider === 'email') {
+
                                 const newKey = uuidv4().replaceAll('-', '');
-                                emailjs.send("service_ur2epnr", "template_xzm3mwc", {
+
+                                emailjs.send(import.meta.env.VITE_EMAILJS_SERVICE_ID, import.meta.env.VITE_EMAILJS_TEMPLATE_ID, {
                                     techbookLink: window.location.origin,
                                     message: `passwordReset/u:${user?.uid}-k:${newKey}`,
                                     to_email: emailVal,
                                     to_name: user?.name?.split(' ')[0],
-                                }, "7R1IX_EmznwwfauiE")
+                                }, import.meta.env.VITE_EMAILJS_USER_ID)
                                     .then(() => {
-                                        setLoading('');
+
                                         navigate('/login');
-                                        localStorage.setItem('QC-Tb-PasswordResetData', JSON.stringify({ date: new Date().toLocaleDateString(), email: emailVal, key: newKey }))
+                                        localStorage.setItem('QC-Tb-PasswordResetData', JSON.stringify({ date: new Date().toLocaleDateString(), email: window.btoa(emailVal), key: window.btoa(newKey) }))
                                         props.updateNotification({ type: 'green', msg: 'The password reset link has been sent to your email.' });
+
                                     }).catch(error => {
+
                                         console.error(error);
-                                        setLoading('');
                                         props.updateNotification({ type: 'red', msg: 'Something went wrong! Please try again.' });
+
                                     });
-                            } else {
-                                setLoading('');
+                            } else
                                 props.updateNotification({ type: 'red', msg: 'This account is created with a different login method. Try to login with Google or Facebook.' });
-                            }
+
                         }
-                    }).catch(() => {
-                        setLoading('');
-                        props.updateNotification({ type: 'red', msg: 'Something went wrong. Please try again.' });
-                    });
-            } else {
+
+                    }).catch(() => props.updateNotification({ type: 'red', msg: 'Something went wrong. Please try again.' }));
+
+                setLoading('');
+
+            } else
                 props.updateNotification({ type: 'red', msg: "It seems like you're offline. Try again when you're online." });
-            }
+
         }
     }
 
     const changePassword = () => {
+
         setLoading('transition');
+
         if (selectedUser && selectedUserKey) {
+
+            // Update user's profile with the new password in the firestore database.
             updateDoc(doc(db, 'users', selectedUserKey), { ...selectedUser, password: passwordVal })
                 .then(() => {
-                    props.updateNotification({ type: 'green', msg: "Password changed successfully." });
-                    setLoading('');
+
                     localStorage.removeItem('QC-Tb-PasswordResetData');
-                    props.user ? navigate('/home') : navigate('/login');
+                    props.updateNotification({ type: 'green', msg: "Password changed successfully." });
+
                 }).catch(err => {
+
                     console.log(err);
-                    props.user ? navigate('/home') : navigate('/login');
                     props.updateNotification({ type: 'red', msg: "Something went wrong. Please try again." });
-                })
+
+                });
+
+            props.user ? navigate('/home') : navigate('/login');
+            setLoading('');
         }
     }
 
     const checkPassword = () => {
+
+        // A function which will test the strength of the password.
         if (!window.navigator.onLine)
             props.updateNotification({ type: 'red', msg: "It seems like you're offline. Please try again when you're online." });
         else if (!/\d/.test(passwordVal) || !/[!@#$%^&*(),.?":{}|<>]/.test(passwordVal) || passwordVal.length < 8)
             props.updateNotification({ type: 'red', msg: 'Choose a strong 8 digit password with atleast a number and a symbol.' });
         else if (passwordVal !== confirmPasswordVal)
             props.updateNotification({ type: 'red', msg: 'Password do not match.' });
-        else {
+        else
             changePassword();
-        }
     }
 
     return (

@@ -52,16 +52,14 @@
 
 #qc_tb_dashboard #qc_tb_container nav #left {
     display: flex;
+    gap: 10px;
 }
 
 #qc_tb_dashboard #qc_tb_container nav #left button {
-    padding: 8px 10px;
+    padding: 10px;
     background-color: transparent;
     color: gray;
     font-size: 14px;
-    padding-bottom: 10px;
-    margin: 5px;
-    align-items: center;
     position: relative;
 }
 
@@ -114,35 +112,8 @@
     align-items: center;
 }
 
-#qc_tb_dashboard #qc_tb_container nav #right>div {
-    display: flex;
-}
-
-#qc_tb_dashboard #qc_tb_container nav #right>div button {
-    padding: 8px;
-    display: flex;
-    cursor: pointer;
-    color: gray;
-    border-bottom: 2px solid transparent;
-    transition: all 300ms ease;
-}
-
-#qc_tb_dashboard #qc_tb_container nav #right>div button svg {
-    height: 20px;
-    width: 20px;
-}
-
-#qc_tb_dashboard #qc_tb_container nav #right>div button.active {
-    border-color: var(--secondary);
-    color: var(--secondary);
-    cursor: default;
-}
-
-#qc_tb_dashboard #qc_tb_container nav #right button svg {
-    transition: transform 500ms ease;
-}
-
 #qc_tb_dashboard #qc_tb_container nav #right button.rotate svg {
+    transition: transform 500ms ease;
     transform: rotate(180deg);
 }
 
@@ -201,16 +172,6 @@
         padding: 0 10px;
     }
 
-    #qc_tb_dashboard #qc_tb_container nav #left button {
-        font-size: 0;
-        padding: 8px;
-    }
-
-    #qc_tb_dashboard #qc_tb_container nav #left button svg {
-        margin: 0;
-        height: 20px;
-    }
-
     #qc_tb_dashboard #body section article.qc_tb_taskTile {
         width: 100%;
     }
@@ -219,5 +180,18 @@
 @media screen and (width<=425px) {
     #qc_tb_dashboard header div p:nth-child(1) {
         font-size: 24px;
+    }
+}
+
+@media screen and (width<=400px) {
+
+    #qc_tb_dashboard #qc_tb_container nav #left button {
+        font-size: 0;
+        padding: 8px;
+    }
+
+    #qc_tb_dashboard #qc_tb_container nav #left button svg {
+        margin: 0;
+        height: 20px;
     }
 }

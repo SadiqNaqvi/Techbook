@@ -1,5 +1,6 @@
 export default function SettingColorSection(props) {
-  
+
+  // Collection of all the available colors which can be apply on the web app.
   const colorsArray = [
     {
       secondary: '9E9E9E',
@@ -84,10 +85,14 @@ export default function SettingColorSection(props) {
     <div id="qc_tb_settingPersonalizeSection">
 
       <div id="qc_tb_settingColorPalleteBox">
+
         {colorsArray.map((color, index) => (
-          <div className={`qc_tb_settingColorPalleteBox ${props.appColor?.secondary === color.secondary && 'selected'}`} style={{ backgroundColor: `#${color.secondary}` }} key={index} onClick={() => props.changeAppSetting('AppColor', color)}></div>
+          <span className={`qc_tb_settingColorPalleteBox ${props.appColor?.secondary === color.secondary ? 'selected' : ''}`} style={{ backgroundColor: `#${color.secondary}` }} key={index} onClick={() => props.changeAppSetting('AppColor', color)}>
+          </span>
         ))}
+
       </div>
+
       <p className="qc_tb_settingDesc">Elevate your experience on our webapp with Palette Play - a dynamic customization feature that puts the power of color in your hands. Unleash your creativity by effortlessly switching between a range of captivating color palettes that resonate with your mood.</p>
     </div>
   )

@@ -6,58 +6,92 @@ export default function SettingAccountSection(props) {
     const navigate = useNavigate();
 
     const signOut = () => {
-        props.user.authProvider !== 'email' && logout();
+
+        // If user has signed up with google or facebook then log them out from firebase.
+        (props.user.authProvider === 'google' || props.user.authProvider === 'facebook') && logout();
+
+        // Delete the credentials of the user from the localstorage.
         localStorage.removeItem("QC-Techbook-ActiveUser");
+
+        // Navigate the user to the login page they're successfully logged out.
         navigate('/login');
     }
 
     const sendVerificationEmail = () => {
+
+        // Get the account verification data from the localstorage. 
         const accountVerifyLinkData = JSON.parse(localStorage.getItem('QC-Techbook-AccountVerifyLinkData'));
-        if (accountVerifyLinkData && accountVerifyLinkData.date === new Date().toLocaleDateString() && accountVerifyLinkData.email === props.user.email) {
+
+        // Check if the user has requested a verification link on the same day. If yes then notify them otherwise proceed.
+        if (accountVerifyLinkData && accountVerifyLinkData.date === new Date().toLocaleDateString() && window.atob(accountVerifyLinkData.email) === props.user.email) {
             props.updateNotification({ type: 'green', msg: 'Account Verification link has already been sent to your email.' });
         } else {
+
             const key = uuidv4().replaceAll('-', '');
-            emailjs.send("service_ur2epnr", "template_jtj9yhy", {
+
+            emailjs.send(import.meta.env.VITE_EMAILJS_SERVICE_ID, import.meta.env.VITE_EMAILJS_TEMPLATE_ID2, {
+
                 techbookLink: window.location.origin,
                 message: `verifyAccount/u:${props.user.key}-k:${key}`,
                 to_email: props.user.email,
                 to_name: props.user.name?.split(' ')[0],
-            }, "7R1IX_EmznwwfauiE")
+
+            }, import.meta.env.VITE_EMAILJS_USER_ID)
                 .then(() => {
+
                     props.updateNotification({ type: 'green', msg: 'Account Verification link has been sent to your email.' });
+
                     localStorage.setItem('QC-Techbook-AccountVerifyLinkData', JSON.stringify({ date: new Date().toLocaleDateString(), email: props.user.email, key: key }))
+
                 }).catch(error => {
+
                     console.error(error);
+
                     props.updateNotification({ type: 'red', msg: 'Something went wrong! Please try again.' });
+
                 });
         }
     }
 
     const requestPasswordChange = () => {
-        const emailResetLinkData = JSON.parse(localStorage.getItem('QC-Tb-PasswordResetData'));
-        if (emailResetLinkData && emailResetLinkData?.email === props.user?.email && emailResetLinkData?.date === new Date().toLocaleDateString()) {
+
+        // Get the password reset data from the localstorage.
+        const passwordResetLinkData = JSON.parse(localStorage.getItem('QC-Tb-PasswordResetData'));
+
+        // Check if the user has requested the passord reset link on the same day, if yes then notify them otherwise proceed.
+        if (passwordResetLinkData && window.atob(passwordResetLinkData.email) === props.user?.email && passwordResetLinkData.date === new Date().toLocaleDateString()) {
             props.updateNotification({ type: 'green', msg: 'Password Reset link was already sent to your email.' });
         } else {
+
             const key = uuidv4().replaceAll('-', '');
-            emailjs.send("service_ur2epnr", "template_xzm3mwc", {
+
+            emailjs.send(import.meta.env.VITE_EMAILJS_SERVICE_ID, import.meta.env.VITE_EMAILJS_TEMPLATE_ID, {
                 techbookLink: window.location.origin,
                 message: `/passwordReset/u:${props.user?.key}-k:${key}`,
                 to_email: props.user?.email,
                 to_name: props.user?.name?.split(' ')[0],
-            }, "7R1IX_EmznwwfauiE")
+            }, import.meta.env.VITE_EMAILJS_USER_ID)
                 .then(() => {
+
                     props.updateNotification({ type: 'green', msg: 'Password Reset link has been sent to your email.' });
-                    localStorage.setItem('QC-Tb-PasswordResetData', JSON.stringify({ date: new Date().toLocaleDateString(), email: props.user?.email, key: key }))
+
+                    localStorage.setItem('QC-Tb-PasswordResetData', JSON.stringify({ date: new Date().toLocaleDateString(), email: window.btoa(props.user?.email), key: window.btoa(key) }))
+
                 }).catch(error => {
+
                     console.error(error);
+
                     props.updateNotification({ type: 'red', msg: 'Something went wrong! Please try again.' });
+
                 });
         }
     }
 
     return (
         <div id="qc_tb_settingAccountSection">
+
             <section id="qc_tb_settingUserCard">
+
                 <div id="qc_tb_settingUserCardTop">
                     <div id="qc_tb_settingUserCardAvatar">
                         {props.user.avatar ?
@@ -93,6 +127,7 @@ export default function SettingAccountSection(props) {
                     </div>
 
                 </div>
+
                 <div id="qc_tb_settingUserCardBottom">
                     {
                         props.user?.authProvider === "guest" ?
@@ -110,6 +145,7 @@ export default function SettingAccountSection(props) {
                             </>
                     }
                 </div>
+
             </section>
             {
                 props.user?.authProvider === 'email' && !props.user?.isVerified &&

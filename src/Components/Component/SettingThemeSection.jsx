@@ -10,17 +10,22 @@ export default function SettingThemeSection(props) {
             </div>
 
             <div className="qc_tb_settingToggleCont">
+
                 <label>Automatic Dark-Mode</label>
+
                 <button className={`qc_tb_toggleBtn ${props.autoDarkmode ? "check" : ''}`} onClick={() => props.changeAppSetting('AutoDarkMode', !props.autoDarkmode)} >
-                    <div className="qc_tb_toggleBtnInner"></div>
+                    <span className="qc_tb_toggleBtnInner"></span>
                 </button>
             </div>
 
             <p className='qc_tb_settingDesc'>Experience effortless visual comfort with our automatic dark mode feature. Seamlessly transitioning between dark and light modes, it adapts to your surroundings by enabling dark mode from sunset to sunrise. When the sun rises, the interface effortlessly brightens up, enhancing your readability and reducing eye strain.</p>
+
             <div className="qc_tb_settingToggleCont">
+
                 <label>Mid-Night Mode</label>
+
                 <button className={`qc_tb_toggleBtn ${props.midnightMode && 'check'}`} onClick={() => props.changeAppSetting('MidnightMode', !props.midnightMode)} >
-                    <div className="qc_tb_toggleBtnInner"></div>
+                    <span className="qc_tb_toggleBtnInner"></span>
                 </button>
             </div>
 

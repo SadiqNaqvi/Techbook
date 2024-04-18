@@ -85,4 +85,4 @@ const bgImgSmall = [
   Bg20small,
 ];
 
-export {bgImg, bgImgSmall};
+export { bgImg, bgImgSmall };

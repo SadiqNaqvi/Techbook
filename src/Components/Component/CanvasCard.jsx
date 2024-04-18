@@ -2,9 +2,13 @@ import '../CSS/CanvasCard.css'
 import { Link, useNavigate } from "react-router-dom";
 
 export default function CanvasCard(props) {
+
     const navigate = useNavigate();
+
     return (
         <article className="qc_tb_canvasCard">
+
+            {/* Pin button which will pin this canvas card on the top */}
             <button className="qc_tb_canvasCardBtns pinBtn" onClick={() => props.updateCanvasData('pin', props.element)}>
                 {props.element.pin ?
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
@@ -16,7 +20,9 @@ export default function CanvasCard(props) {
                     </svg>
                 }
             </button>
+
             <div className="qc_tb_canvasCardContent" style={{ backgroundImage: `url('${props.element.content}')` }} onClick={() => navigate(`/canvas/${props.element.key}`)} ></div>
+
             <div className="qc_tb_canvasCardOptions">
                 <div id="qc_tb_canvasCardLeft">
                     <button className="qc_tb_canvasCardBtns" onClick={() => props.updateCanvasData('like', props.element)}>
@@ -31,11 +37,13 @@ export default function CanvasCard(props) {
                         }
                     </button>
                 </div>
+
                 <div className="qc_tb_canvasCardName">
                     <Link to={`/canvas/${props.element.key}`}>
                         {props.element.name}
                     </Link>
                 </div>
+                
                 <div id="qc_tb_canvasCardRight">
                     <button className="qc_tb_canvasCardBtns canvasDeleteBtn" onClick={() => props.updateWarning({ show: true, msg: `Are you sure you want to delete '${props.element.name}'?`, greenMsg: 'Cancel', redMsg: 'Delete', func: () => props.updateCanvasData('delete', props.element) })}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512"><path d="M164.2 39.5L148.9 64H299.1L283.8 39.5c-2.9-4.7-8.1-7.5-13.6-7.5H177.7c-5.5 0-10.6 2.8-13.6 7.5zM311 22.6L336.9 64H384h32 16c8.8 0 16 7.2 16 16s-7.2 16-16 16H416V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V96H16C7.2 96 0 88.8 0 80s7.2-16 16-16H32 64h47.1L137 22.6C145.8 8.5 161.2 0 177.7 0h92.5c16.6 0 31.9 8.5 40.7 22.6zM64 96V432c0 26.5 21.5 48 48 48H336c26.5 0 48-21.5 48-48V96H64zm80 80V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V176c0-8.8 7.2-16 16-16s16 7.2 16 16zm96 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V176c0-8.8 7.2-16 16-16s16 7.2 16 16zm96 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V176c0-8.8 7.2-16 16-16s16 7.2 16 16z"></path></svg>
