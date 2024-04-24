@@ -367,7 +367,7 @@ export default function CanvasPropEdit(prop) {
     }
 
     const handlePropFontChange = (font) => {
-        propEditPreview.current?.querySelector('.selectedPropInner p').style.fontFamily = font;
+        propEditPreview.current.querySelector('.selectedPropInner p').style.fontFamily = font;
     }
 
     const deployEyeDropper = () => {

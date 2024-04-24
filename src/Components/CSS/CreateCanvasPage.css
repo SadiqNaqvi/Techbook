@@ -261,7 +261,7 @@
 
 .selectedProp .selectedPropOptions:hover {
     background-color: var(--primarydark);
-    color: var(--accent);
+    color: var(--secondary);
 }
 
 .selectedProp .selectedPropEdit {

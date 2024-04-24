@@ -228,46 +228,46 @@ export default function FolderPage(props) {
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"></path></svg>
                     </button>
                 </div>
-                <div id="qc_tb_folderLeftBody">
-                    <div className={`qc_tb_folderTile ${selectedFolder === 'favourite' ? 'active' : ''}`}>
+                <ul id="qc_tb_folderLeftBody">
+                    <li className={`qc_tb_folderTile ${selectedFolder === 'favourite' ? 'active' : ''}`}>
                         <Link to="/folder/favourite">
                             <div className="qc_tb_folderTileIcon">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"></path></svg>
                             </div>
                             <div className="qc_tb_folderTileName">Favourite</div>
                         </Link>
-                    </div>
-                    <div className={`qc_tb_folderTile ${selectedFolder === 'offline' ? 'active' : ''}`}>
+                    </li>
+                    <li className={`qc_tb_folderTile ${selectedFolder === 'offline' ? 'active' : ''}`}>
                         <Link to="/folder/offline">
                             <div className="qc_tb_folderTileIcon">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M272 16c0-8.8-7.2-16-16-16s-16 7.2-16 16V329.4L139.3 228.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l128 128c6.2 6.2 16.4 6.2 22.6 0l128-128c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L272 329.4V16zM140.1 320H64c-35.3 0-64 28.7-64 64v64c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V384c0-35.3-28.7-64-64-64H371.9l-32 32H448c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H64c-17.7 0-32-14.3-32-32V384c0-17.7 14.3-32 32-32H172.1l-32-32zM432 416a24 24 0 1 0 -48 0 24 24 0 1 0 48 0z"></path></svg>
                             </div>
                             <div className="qc_tb_folderTileName">Offline</div>
                         </Link>
-                    </div>
-                    <div className={`qc_tb_folderTile ${selectedFolder === 'archive' ? 'active' : ''}`}>
+                    </li>
+                    <li className={`qc_tb_folderTile ${selectedFolder === 'archive' ? 'active' : ''}`}>
                         <Link to="/folder/archive">
                             <div className="qc_tb_folderTileIcon">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"></path></svg>
                             </div>
                             <div className="qc_tb_folderTileName">Archive</div>
                         </Link>
-                    </div>
+                    </li>
                     <TransitionGroup component={null}>
                         {props.folderData?.sort((a, b) => new Date(b.date) - new Date(a.date)).map(el => (
                             <CSSTransition key={el.key} timeout={500} classNames="zoomIn">
-                                <div className={`qc_tb_folderTile ${selectedFolder === el.key ? 'active' : ''}`}>
+                                <li className={`qc_tb_folderTile ${selectedFolder === el.key ? 'active' : ''}`}>
                                     <Link to={`/folder/${el.key}`}>
                                         <div className="qc_tb_folderTileIcon">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M64 64C46.3 64 32 78.3 32 96V416c0 17.7 14.3 32 32 32H448c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32H291.9c-17 0-33.3-6.7-45.3-18.7L210.7 73.4c-6-6-14.1-9.4-22.6-9.4H64zM0 96C0 60.7 28.7 32 64 32H188.1c17 0 33.3 6.7 45.3 18.7l35.9 35.9c6 6 14.1 9.4 22.6 9.4H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96z"></path></svg>
                                         </div>
                                         <div className="qc_tb_folderTileName">{el.name}</div>
                                     </Link>
-                                </div>
+                                </li>
                             </CSSTransition>
                         ))}
                     </TransitionGroup>
-                </div>
+                </ul>
             </section>
 
             <section id="qc_tb_folderRight" className={!selectedFolder ? 'hide' : ''}>

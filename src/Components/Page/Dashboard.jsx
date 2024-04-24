@@ -17,6 +17,7 @@ export default function Dashboard(props) {
     const [dashboardArray, setDashboardArray] = useState([]);
 
     useEffect(() => {
+
         // Get the time of the day to greet user.
         if (new Date().getHours() >= 4 && new Date().getHours() < 12)
             setTimeOfDay('Morning');

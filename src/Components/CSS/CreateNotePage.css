@@ -98,7 +98,7 @@
 }
 
 .ql-editor *::selection {
-    background-color: var(--accent);
+    background-color: var(--secondary);
     color: black;
 }
 

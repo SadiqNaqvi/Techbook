@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react'
 import '../CSS/SettingPage.css'
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import SettingColorSection from '../Component/SettingColorSection';
 import SettingBackgroundSection from '../Component/SettingBackgroundSection';
 import SettingThemeSection from '../Component/SettingThemeSection.jsx';
 import SettingAccountSection from '../Component/SettingAccountSection.jsx';
 import SettingFeedbackSection from '../Component/SettingFeedbackSection.jsx';
 import SettingReportSection from '../Component/SettingReportSection.jsx';
+import SettingAboutSection from '../Component/SettingAboutSection.jsx';
 
 export default function SettingPage(props) {
+
     const { settingPage } = useParams();
     const navigate = useNavigate();
     const [settingHeading, setSettingHeading] = useState('');
@@ -18,11 +20,10 @@ export default function SettingPage(props) {
             if (settingPage === 'personalize') setSettingHeading('Personalization');
             else if (settingPage === 'background') setSettingHeading('background');
             else if (settingPage === 'theme') setSettingHeading('theme');
-            else if (settingPage === 'shortcut') setSettingHeading('keyboard shortcut');
             else if (settingPage === 'account') setSettingHeading('account');
             else if (settingPage === 'feedback') setSettingHeading('feedback');
             else if (settingPage === 'report') setSettingHeading('report');
-            else if (settingPage === 'about') setSettingHeading('about us');
+            else if (settingPage === 'about') setSettingHeading('about techbook');
             else navigate('/setting');
         }
     }, [settingPage]);
@@ -55,15 +56,6 @@ export default function SettingPage(props) {
                             Theme
                         </Link>
                     </li>
-                    <li className={`qc_tb_stnpNavTiles ${settingPage === 'shortcut' ? 'active' : ''}`}>
-                        <Link to="/setting/shortcut">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M14 5a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h12zM2 4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H2z" />
-                                <path d="M13 10.25a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5zm0-2a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5zm-5 0A.25.25 0 0 1 8.25 8h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5A.25.25 0 0 1 8 8.75v-.5zm2 0a.25.25 0 0 1 .25-.25h1.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-1.5a.25.25 0 0 1-.25-.25v-.5zm1 2a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5zm-5-2A.25.25 0 0 1 6.25 8h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5A.25.25 0 0 1 6 8.75v-.5zm-2 0A.25.25 0 0 1 4.25 8h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5A.25.25 0 0 1 4 8.75v-.5zm-2 0A.25.25 0 0 1 2.25 8h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5A.25.25 0 0 1 2 8.75v-.5zm11-2a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5zm-2 0a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5zm-2 0A.25.25 0 0 1 9.25 6h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5A.25.25 0 0 1 9 6.75v-.5zm-2 0A.25.25 0 0 1 7.25 6h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5A.25.25 0 0 1 7 6.75v-.5zm-2 0A.25.25 0 0 1 5.25 6h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5A.25.25 0 0 1 5 6.75v-.5zm-3 0A.25.25 0 0 1 2.25 6h1.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-1.5A.25.25 0 0 1 2 6.75v-.5zm0 4a.25.25 0 0 1 .25-.25h.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-.5a.25.25 0 0 1-.25-.25v-.5zm2 0a.25.25 0 0 1 .25-.25h5.5a.25.25 0 0 1 .25.25v.5a.25.25 0 0 1-.25.25h-5.5a.25.25 0 0 1-.25-.25v-.5z" />
-                            </svg>
-                            Keyboard Shortcuts
-                        </Link>
-                    </li>
                     <li className={`qc_tb_stnpNavTiles ${settingPage === 'account' ? 'active' : ''}`}>
                         <Link to="/setting/account">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M412.1 416.6C398.1 361.1 347.9 320 288 320H224c-59.9 0-110.1 41.1-124.1 96.6C58 375.9 32 319 32 256C32 132.3 132.3 32 256 32s224 100.3 224 224c0 63-26 119.9-67.9 160.6zm-28.5 23.4C347.5 465.2 303.5 480 256 480s-91.5-14.8-127.7-39.9c4-49.3 45.3-88.1 95.7-88.1h64c50.4 0 91.6 38.8 95.7 88.1zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-256a48 48 0 1 1 0-96 48 48 0 1 1 0 96zm-80-48a80 80 0 1 0 160 0 80 80 0 1 0 -160 0z"></path></svg>
@@ -93,6 +85,10 @@ export default function SettingPage(props) {
                         </Link>
                     </li>
                 </ul>
+
+                <div id="qc_tb_stnpLFoot">
+
+                </div>
             </section>
 
             <section id="qc_tb_settingPageRight" className={!settingPage ? 'hide' : ''}>
@@ -119,23 +115,30 @@ export default function SettingPage(props) {
 
                             <section id="qc_tb_stnpRBody">
                                 {
-                                    settingPage === 'personalize' ?
-                                        <SettingColorSection appColor={props.appColor} changeAppSetting={props.changeAppSetting} />
-                                        :
-                                        settingPage === 'background' ?
+                                    <Routes>
+                                        <Route path="/personalize" element={
+                                            <SettingColorSection appColor={props.appColor} changeAppSetting={props.changeAppSetting} />
+                                        } />
+                                        <Route path="background" element={
                                             <SettingBackgroundSection noteBg={props.noteBg} customNoteBg={props.customNoteBg} changeAppSetting={props.changeAppSetting} />
-                                            :
-                                            settingPage === 'theme' ?
-                                                <SettingThemeSection appTheme={props.appTheme} updateTheme={props.updateTheme} midnightMode={props.midnightMode} autoDarkmode={props.autoDarkmode} changeAppSetting={props.changeAppSetting} />
-                                                :
-                                                settingPage === 'account' ?
-                                                    <SettingAccountSection user={props.user} changeUser={props.changeUser} updateNotification={props.updateNotification} updateWarning={props.updateWarning} />
-                                                    :
-                                                    settingPage === 'feedback' ?
-                                                        <SettingFeedbackSection user={props.user} updateNotification={props.updateNotification} />
-                                                        :
-                                                        settingPage === 'report' &&
-                                                        <SettingReportSection user={props.user} updateNotification={props.updateNotification} />
+                                        } />
+                                        <Route path="theme" element={
+                                            <SettingThemeSection appTheme={props.appTheme} updateTheme={props.updateTheme} midnightMode={props.midnightMode} autoDarkmode={props.autoDarkmode} changeAppSetting={props.changeAppSetting} />
+                                        } />
+                                        <Route path="account" element={
+                                            <SettingAccountSection user={props.user} changeUser={props.changeUser} updateNotification={props.updateNotification} updateWarning={props.updateWarning} />
+                                        } />
+                                        <Route path="feedback" element={
+                                            <SettingFeedbackSection user={props.user} updateNotification={props.updateNotification} />
+                                        } />
+                                        <Route path="report" element={
+                                            <SettingReportSection user={props.user} updateNotification={props.updateNotification} />
+                                        } />
+                                        <Route path="about" element={
+                                            <SettingAboutSection />
+                                        } />
+                                        <Route path="*" element={<Navigate to="/setting" />} />
+                                    </Routes>
                                 }
                             </section>
                         </>

@@ -8,12 +8,12 @@
     color: gray;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid var(--accent);
+    border-right: 1px solid var(--secondary);
 }
 
 #qc_tb_stnpLHead {
     width: 100%;
-    height: 10%;
+    height: 60px;
     padding: 0 15px;
     display: flex;
     align-items: center;
@@ -24,7 +24,7 @@
 }
 
 #qc_tb_stnpLBody {
-    height: 90%;
+    height: calc(100% - 120px);
     width: 100%;
     padding: 20px 0;
     overflow-y: auto;
@@ -58,7 +58,7 @@
 
 .darkmode .qc_tb_stnpNavTiles:not(.active):hover {
     background-color: var(--gray10);
-    color: var(--accent);
+    color: var(--secondary);
 }
 
 .lightmode .qc_tb_stnpNavTiles.active {
@@ -69,8 +69,8 @@
 
 .darkmode .qc_tb_stnpNavTiles.active {
     background-color: var(--gray10);
-    color: var(--accent);
-    border-bottom-color: var(--accent);
+    color: var(--secondary);
+    border-bottom-color: var(--secondary);
 }
 
 #qc_tb_settingPageRight {
@@ -160,7 +160,7 @@
 
 .darkmode .qc_tb_settingColorPalleteBox.selected {
     border: 2px solid var(--primarylight);
-    filter: drop-shadow(0 0 5px var(--accent));
+    filter: drop-shadow(0 0 5px var(--secondary));
 }
 
 .lightmode .qc_tb_settingColorPalleteBox.selected {
@@ -534,7 +534,7 @@
     justify-content: center;
 }
 
-.lightmode #qc_tb_feedbackCardFoot button:not(.disable) {
+.lightmode :where(#qc_tb_feedbackCardFoot, #qc_tb_reportContBottom) button:not(.disable) {
     background-color: var(--secondary);
     color: var(--primarydark);
     border: none;
@@ -605,6 +605,58 @@
     margin: auto;
     margin-top: 0;
 }
+
+#qc_tb_settingAboutSection div {
+    padding: 30px 0;
+    border-bottom: 1px solid gray;
+}
+
+#qc_tb_settingAboutSection h3 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#qc_tb_settingAboutSection p {
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+#qc_tb_settingAboutSection a {
+    display: inline;
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+#qc_tb_settingAboutSection li {
+    margin: 10px 0;
+    margin-left: 15px;
+    list-style-type: disc;
+    line-height: 1.6;
+}
+
+#qc_tb_settingAboutSection footer {
+    padding: 30px;
+}
+
+#qc_tb_settingAboutSection #socialLinks {
+    display: flex;
+    margin: auto;
+    margin-top: 20px;
+    gap: 15px;
+    width: fit-content;
+}
+
+#qc_tb_settingAboutSection #socialLinks img {
+    height: 30px;
+    aspect-ratio: 1;
+}
+
+.darkmode #qc_tb_settingAboutSection #socialLinks img.invert {
+    filter: invert(1);
+}
+
 
 @media screen and (width <=1024px) {
     #qc_tb_backgroundImgBox {

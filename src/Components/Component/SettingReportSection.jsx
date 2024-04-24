@@ -51,12 +51,16 @@ export default function SettingReportSection(props) {
             <div id="qc_tb_settingReportCont">
                 <div id="qc_tb_reportContTop">
                     <textarea value={reportMsg} placeholder=" Describe the issue in details.
-                                            1. Which part of the Web Application has the issue.
-                                            2. For how long you are facing this issue." onChange={e => setReportMsg(e.target.value)}>
+1. Which part of the Web Application has the issue.
+2. For how long you are facing this issue." onChange={e => setReportMsg(e.target.value)}>
                     </textarea>
                 </div>
                 <div id="qc_tb_reportContBottom">
-                    <button className="qc_tb_bigBtns" onClick={saveReport}>Submit</button>
+                    {reportMsg.trim().length > 10 ?
+                        <button className="qc_tb_bigBtns" onClick={saveReport}>Submit</button>
+                        :
+                        <button className="qc_tb_bigBtns disable">Submit</button>
+                    }
                 </div>
             </div>
         </div>

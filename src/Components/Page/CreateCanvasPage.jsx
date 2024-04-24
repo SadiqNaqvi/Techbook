@@ -77,22 +77,9 @@ export default function CreateCanvasPage(props) {
                     });
             }
 
-            const keyboardShortcutForCanvas = (e) => {
-                if (e.key === 'ArrowLeft' && e.shiftKey) undoCanvas();
-                else if (e.key === 'Backspace' && e.shiftKey) clearCanvas();
-                else if (e.key === 'D' && e.shiftKey) handleToolBoxState('draw');
-                else if (e.key === 'E' && e.shiftKey) handleToolBoxState('erase');
-                else if (e.key === 'M' && e.shiftKey) handleToolBoxState('move');
-            }
-
             document.body.addEventListener('paste', takeInputFromClipboard);
 
-            document.body.addEventListener('keyup', keyboardShortcutForCanvas);
-
-            return () => {
-                document.body.removeEventListener('paste', takeInputFromClipboard);
-                document.body.removeEventListener('keyup', keyboardShortcutForCanvas);
-            }
+            return () => document.body.removeEventListener('paste', takeInputFromClipboard);
         }
     }, [isCanvasShow, isPropEditing]);
 
@@ -121,14 +108,13 @@ export default function CreateCanvasPage(props) {
     }, [canvasRef.current]);
 
     useEffect(() => {
-        if (!canvas.current) return
+        if (!canvasRef.current) return
 
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
 
         // Temporary Variables.
-        let isDrawing = false;
-        let lastX, lastY;
+        let isDrawing = false, lastX, lastY;
 
         // Function to save the state of canvas for undo functionality.
         const saveCanvasState = () => {
@@ -650,7 +636,7 @@ export default function CreateCanvasPage(props) {
                     </div>
                 </div>
             </CSSTransition>
-            
+
             <CSSTransition in={isPropEditing} timeout={500} classNames="zoomIn" unmountOnExit>
                 <CanvasPropEdit exitPropEdit={() => setIsPropEditing(false)} updateProp={updateProp} />
             </CSSTransition>

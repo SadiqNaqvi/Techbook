@@ -1,7 +1,7 @@
 #qc_tb_sidebar {
     height: 100%;
     width: 60px;
-    border-right: 1px solid var(--accent);
+    border-right: 1px solid var(--secondary);
 }
 
 #qc_tb_sbHead,
@@ -59,7 +59,7 @@
 
 .darkmode .qc_tb_sbBtn:not(.active):hover {
     background-color: var(--gray10);
-    color: var(--accent);
+    color: var(--secondary);
     border: 1px solid var(--gray10);
 }
 
@@ -71,7 +71,7 @@
 
 .darkmode .qc_tb_sbBtn.active {
     background-color: var(--gray10);
-    color: var(--accent);
+    color: var(--secondary);
     transition: background-color 500ms ease;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .darkmode #qc_tb_sbNote:not(.active):hover svg {
-    stroke: var(--accent);
+    stroke: var(--secondary);
 }
 
 #qc_tb_sbUserOuter {
@@ -131,10 +131,6 @@
 
     .qc_tb_sbBtn svg {
         height: 20px;
-    }
-
-    .qc_tb_sbBtn#keyboard {
-        display: none;
     }
 }
 

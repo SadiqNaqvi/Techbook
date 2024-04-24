@@ -106,10 +106,10 @@ export default function SettingFeedbackSection(props) {
 
                 <div id="qc_tb_feedbackCardMsg">
                     <textarea value={msgInput}
-                        placeholder=" 1. Tell us about your experience on our Web Application.
-                    2. Your Likes and Dislikes.
-                    3. Suggestions?
-                    4. What else should we do for your 5 Stars." onChange={e => setMsgInput(e.target.value)}></textarea>
+                        placeholder="1. Tell us about your experience on our Web Application.
+2. Your Likes and Dislikes.
+3. Suggestions?
+4. What else should we do for your 5 Stars." onChange={e => setMsgInput(e.target.value)}></textarea>
                 </div>
 
                 <div id="qc_tb_feedbackCardFoot">

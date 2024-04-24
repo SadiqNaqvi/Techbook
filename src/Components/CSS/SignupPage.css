@@ -11,7 +11,7 @@
     position: absolute;
     inset: 0;
     width: 65%;
-    background-image: url('../Images/login\ background.jpg');
+    background-image: url('../Images/loginBackground.jpg');
     background-size: cover;
     z-index: 0;
     opacity: 0.4;

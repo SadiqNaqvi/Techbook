@@ -6,7 +6,7 @@
 #qc_tb_folderLeft {
     height: 100%;
     width: 25%;
-    border-right: 1px solid var(--accent);
+    border-right: 1px solid var(--secondary);
 }
 
 #qc_tb_folderLeftHead {
@@ -40,24 +40,25 @@
 
 .lightmode .qc_tb_folderTile:hover {
     color: var(--primarydark);
-    background-color: var(--accent);
+    background-color: var(--gray10);
 }
 
 .darkmode .qc_tb_folderTile:hover {
-    color: var(--accent);
-    border-color: var(--accent);
+    color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.qc_tb_folderTile.active {
+    background-color: var(--gray10);
+    border-color: var(--secondary);
 }
 
 .lightmode .qc_tb_folderTile.active {
-    background-color: var(--accent);
-    border-color: var(--primarydark);
     color: var(--primarydark);
 }
 
 .darkmode .qc_tb_folderTile.active {
-    background-color: var(--gray10);
-    border-color: var(--accent);
-    color: var(--accent);
+    color: var(--secondary);
 }
 
 .qc_tb_folderTile a {
@@ -66,10 +67,6 @@
     padding: 0 15px;
     display: flex;
     align-items: center;
-}
-
-.qc_tb_folderTile a:hover {
-    text-decoration: underline;
 }
 
 .qc_tb_folderTileIcon {

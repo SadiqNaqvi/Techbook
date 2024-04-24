@@ -162,7 +162,9 @@ export default function LandingPage(props) {
                             <p>© All Rights Reserved | QCore Technology</p>
                         </div>
                         <div id="middle">
+
                             <label htmlFor="social">Connect with us at:</label>
+
                             <div id="socialBtnsCont">
                                 <Link to="https://www.facebook.com/profile.php?id=61555824026159" target="_blank">
                                     <img src={facebookLogo} alt="" />
@@ -170,16 +172,16 @@ export default function LandingPage(props) {
                                 <Link to="https://www.instagram.com/binarybard01" target="_blank">
                                     <img src={instagramLogo} alt="" />
                                 </Link>
-                                <Link to="" target="_blank">
+                                <Link to="https://twitter.com/SadiqNaqvi08" target="_blank">
                                     <img src={twitterLogo} alt="" id="twitter" />
                                 </Link>
                                 <Link to="https://github.com/SadiqNaqvi" target="_blank">
                                     <img src={githubLogo} alt="" id="github" />
                                 </Link>
-                                <Link to="" target="_blank">
+                                <Link to="https://www.linkedin.com/in/sadiq-naqvi-327892238/" target="_blank">
                                     <img src={linkedinLogo} alt="" />
                                 </Link>
-                                <Link to="mailto:contact.qcore@gmail.com" target="_blank">
+                                <Link to="mailto:naqvisadiq6@gmail.com">
                                     <img src={gmailLogo} alt="" />
                                 </Link>
                             </div>

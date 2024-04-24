@@ -18,7 +18,7 @@ import Loading from '../Component/Loading';
 export default function Homepage(props) {
 
     const navigate = useNavigate();
-    const [appColor, setAppColor] = useState(null);
+    const [appColor, setAppColor] = useState('96f1b5');
     const [autoDarkmode, setAutoDarkMode] = useState(true);
     const [midnightMode, setMidnightMode] = useState(true);
     const [noteBg, setNoteBg] = useState('none');
@@ -32,7 +32,7 @@ export default function Homepage(props) {
     useEffect(() => {
 
         // Set the App Color of user's choice, if any, otherwise set the default App Color. 
-        changeAppSetting("AppColor", JSON.parse(localStorage.getItem('QC-Techbook-AppColor')) || { secondary: '6cb9cf', accent: '96d7f1' });
+        changeAppSetting("AppColor", JSON.parse(localStorage.getItem('QC-Techbook-AppColor')) || "96f1b5");
 
         // Set the Midnight Mode from user's choice, if chosen, otherwise set the Midnight mode to on.
         changeAppSetting("MidnightMode", JSON.parse(localStorage.getItem('QC-Techbook-MidnightMode') || true));
@@ -77,8 +77,7 @@ export default function Homepage(props) {
     const changeAppSetting = (type, update) => {
         if (type === "AppColor") {
 
-            document.getElementById('qc_tech').style.setProperty('--accent', `#${update.accent}`);
-            document.getElementById('qc_tech').style.setProperty('--secondary', `#${update.secondary}`);
+            document.getElementById('qc_tech').style.setProperty('--secondary', `#${update}`);
 
             setAppColor(update);
             localStorage.setItem('QC-Techbook-AppColor', JSON.stringify(update));
@@ -793,7 +792,7 @@ export default function Homepage(props) {
                     });
             }
         }
-        
+
         setFolderData(tempCont);
     }
 
@@ -820,13 +819,13 @@ export default function Homepage(props) {
                         </div>
                     } />
 
-                    <Route path="/setting" element={
+                    <Route path="/setting/*" element={
                         <div id="qc_tb_settingPage" className="qc_tb_page">
                             <Sidebar user={props.user} appTheme={props.appTheme} updateTheme={props.updateTheme} />
                             <SettingPage updateNotification={props.updateNotification} updateWarning={props.updateWarning} user={props.user} changeUser={props.changeUser} appTheme={props.appTheme} updateTheme={props.updateTheme} changeAppSetting={changeAppSetting} appColor={appColor} autoDarkmode={autoDarkmode} midnightMode={midnightMode} noteBg={noteBg} customNoteBg={customNoteBg} />
                         </div>
                     }>
-                        <Route path="/setting/:settingPage" element={<SettingPage updateNotification={props.updateNotification} updateWarning={props.updateWarning} user={props.user} changeUser={props.changeUser} appTheme={props.appTheme} updateTheme={props.updateTheme} changeAppSetting={changeAppSetting} appColor={appColor} autoDarkmode={autoDarkmode} midnightMode={midnightMode} noteBg={noteBg} customNoteBg={customNoteBg} />} />
+                        <Route path="/setting/*:settingPage" element={<SettingPage updateNotification={props.updateNotification} updateWarning={props.updateWarning} user={props.user} changeUser={props.changeUser} appTheme={props.appTheme} updateTheme={props.updateTheme} changeAppSetting={changeAppSetting} appColor={appColor} autoDarkmode={autoDarkmode} midnightMode={midnightMode} noteBg={noteBg} customNoteBg={customNoteBg} />} />
                     </Route>
 
                     <Route path="/folder" element={
@@ -842,10 +841,10 @@ export default function Homepage(props) {
                     <Route path="/create/note" element={<CreateNotePage updateNotification={props.updateNotification} updateWarning={props.updateWarning} updateNotesData={updateNotesData} noteBg={noteBg} customNoteBg={customNoteBg} />} />
                     <Route path="/create/task" element={<CreateTaskPage updateNotification={props.updateNotification} updateWarning={props.updateWarning} tasksData={tasksData} updateTasksData={updateTasksData} noteBg={noteBg} customNoteBg={customNoteBg} />} />
                     <Route path="/create/canvas" element={<CreateCanvasPage updateWarning={props.updateWarning} updateNotification={props.updateNotification} updateCanvasData={updateCanvasData} />} />
-                    <Route path="/note/:noteKey" element={<NoteShowPage updateNotification={props.updateNotification} updateWarning={props.updateWarning} notesData={notesData} updateNotesData={updateNotesData} folderData={folderData} updateFolderData={updateFolderData} noteBg={noteBg} customNoteBg={customNoteBg} />} />
-                    <Route path="/note/:noteKey/edit" element={<CreateNotePage updateNotification={props.updateNotification} updateWarning={props.updateWarning} notesData={notesData} updateNotesData={updateNotesData} noteBg={noteBg} customNoteBg={customNoteBg} />} />
+                    <Route path="/note/:noteKey" element={<NoteShowPage user={props.user} updateNotification={props.updateNotification} updateWarning={props.updateWarning} notesData={notesData} updateNotesData={updateNotesData} folderData={folderData} updateFolderData={updateFolderData} noteBg={noteBg} customNoteBg={customNoteBg} />} />
+                    <Route path="/note/:noteKey/edit" element={<CreateNotePage user={props.user} updateNotification={props.updateNotification} updateWarning={props.updateWarning} notesData={notesData} updateNotesData={updateNotesData} noteBg={noteBg} customNoteBg={customNoteBg} />} />
                     <Route path="/task/:task" element={<CreateTaskPage updateNotification={props.updateNotification} updateWarning={props.updateWarning} tasksData={tasksData} updateTasksData={updateTasksData} noteBg={noteBg} customNoteBg={customNoteBg} />} />
-                    <Route path="/canvas/:canvasKey" element={<CanvasShowPage updateWarning={props.updateWarning} updateNotification={props.updateNotification} canvasData={canvasData} updateCanvasData={updateCanvasData} folderData={folderData} updateFolderData={updateFolderData} />} />
+                    <Route path="/canvas/:canvasKey" element={<CanvasShowPage user={props.user} updateWarning={props.updateWarning} updateNotification={props.updateNotification} canvasData={canvasData} updateCanvasData={updateCanvasData} folderData={folderData} updateFolderData={updateFolderData} />} />
                 </Routes>
             }
         </>

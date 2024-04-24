@@ -1,85 +1,7 @@
 export default function SettingColorSection(props) {
 
   // Collection of all the available colors which can be apply on the web app.
-  const colorsArray = [
-    {
-      secondary: '9E9E9E',
-      accent: 'c3c3c3'
-    },
-    {
-      secondary: '6cb9cf',
-      accent: '96d7f1'
-    },
-    {
-      secondary: '399f9e',
-      accent: '71d5d4'
-    },
-    {
-      secondary: '6ccf85',
-      accent: '96f1b5'
-    },
-    {
-      secondary: '38972f',
-      accent: '5dc153'
-    },
-    {
-      secondary: 'e58683',
-      accent: 'fba5a3'
-    },
-    {
-      secondary: 'ffb6c1',
-      accent: 'ffd0d7'
-    },
-    {
-      secondary: 'd578c9',
-      accent: 'ffc7f8'
-    },
-    {
-      secondary: 'aa6ccf',
-      accent: 'd79ef9'
-    },
-    {
-      secondary: 'd6b598',
-      accent: 'f7d4b4'
-    },
-    {
-      secondary: 'cf916c',
-      accent: 'f5bc9b'
-    },
-    {
-      secondary: 'c96352',
-      accent: 'ffa393'
-    },
-    {
-      secondary: '742b49',
-      accent: 'c56d91'
-    },
-    {
-      secondary: '7a4930',
-      accent: 'b97b5b'
-    },
-    {
-      secondary: '9d8a67',
-      accent: 'dbc498'
-    },
-    {
-      secondary: 'ddb469',
-      accent: 'f7d9a2'
-    },
-    {
-      secondary: 'E09540',
-      accent: 'ffc380'
-    },
-    {
-      secondary: 'faaf96',
-      accent: 'FBCEB1'
-    },
-    {
-      secondary: 'ff7f50',
-      accent: 'ffa685'
-    }
-
-  ]
+  const colorsArray = ['96d7f1', "00BFFF", '96f1b5', "66cdaa", '5dc153', "9AB973", "3cb371", 'f5bc9b', 'c56d91', "FB607F", "FF1DCE", "FF9966", "F88379", "FF91A4", "FFD700", "E8AC41", "FFA000", "DDD06A", 'd79ef9', "7B68EE"]
 
   return (
     <div id="qc_tb_settingPersonalizeSection">
@@ -87,8 +9,8 @@ export default function SettingColorSection(props) {
       <div id="qc_tb_settingColorPalleteBox">
 
         {colorsArray.map((color, index) => (
-          <span className={`qc_tb_settingColorPalleteBox ${props.appColor?.secondary === color.secondary ? 'selected' : ''}`} style={{ backgroundColor: `#${color.secondary}` }} key={index} onClick={() => props.changeAppSetting('AppColor', color)}>
-          </span>
+          <button className={`qc_tb_settingColorPalleteBox ${props.appColor === color ? 'selected' : ''}`} style={{ backgroundColor: `#${color}` }} key={index} onClick={() => props.changeAppSetting('AppColor', color)}>
+          </button>
         ))}
 
       </div>

@@ -12,8 +12,7 @@ body {
   --gray40: #80808066;
   --gray20: #80808033;
   --gray10: #8080801a;
-  --secondary: #6cb9cf;
-  --accent: #96d7f1;
+  --secondary: #96f1b5;
   --contColor: #181820;
   --warningRed: #ff2e2e;
   --successGreen: #00cf00;
@@ -81,7 +80,7 @@ input {
 }
 
 ::selection {
-  background-color: var(--accent);
+  background-color: var(--secondary);
   color: var(--primarydark);
 }
 
@@ -106,7 +105,7 @@ input {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: var(--accent);
+  background-color: var(--secondary);
 }
 
 html,
@@ -221,7 +220,7 @@ body,
 }
 
 .qc_tb_bgImgBackdropFilter .qc_tb_btns {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(2px);
 }
 
@@ -239,7 +238,13 @@ body,
 .darkmode .qc_tb_btns:not(.disable, .active):hover {
   border-color: rgba(255, 255, 255, 0.2);
   background-color: var(--gray10);
-  color: var(--accent);
+  color: var(--secondary);
+}
+
+.qc_tb_bgImgBackdropFilter .qc_tb_btns:hover {
+  color: var(--primarylight) !important;
+  backdrop-filter: blur(2px);
+  border-color: var(--gray60) !important;
 }
 
 .qc_tb_btns.active {
@@ -256,7 +261,7 @@ body,
   font-size: 14px;
   padding: 10px 20px;
   border: 1px solid var(--gray40);
-  color: var(--accent);
+  color: var(--secondary);
   border-radius: 6px;
   transition: all 400ms ease;
 }
@@ -294,7 +299,7 @@ body,
 }
 
 .qc_tb_bgImgBackdropFilter .qc_tb_input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .qc_tb_input:where(:hover, :focus) {
@@ -312,10 +317,10 @@ body,
   inset: 0;
   z-index: 0;
   position: absolute;
-  backdrop-filter: brightness(0.4);
+  backdrop-filter: brightness(0.5);
 }
 
-.qc_tb_bgImgBackdropFilter>section {
+.qc_tb_bgImgBackdropFilter>:where(header, section, footer) {
   z-index: 1;
 }
 
@@ -360,11 +365,11 @@ body,
 
 .lightmode .qc_tb_spOptionBtns:hover {
   color: var(--primarydark);
-  background-color: var(--accent);
+  background-color: var(--secondary);
 }
 
 .darkmode .qc_tb_spOptionBtns:hover {
-  color: var(--accent);
+  color: var(--secondary);
 }
 
 .tooltip {

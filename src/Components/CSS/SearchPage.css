@@ -51,7 +51,7 @@
 }
 
 .darkmode #qc_tb_sphSearchCont input:where(:hover, :focus) {
-    color: var(--accent);
+    color: var(--secondary);
 }
 
 #qc_tb_sphSearchCont button:not(.disable):hover svg {
