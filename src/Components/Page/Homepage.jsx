@@ -822,10 +822,10 @@ export default function Homepage(props) {
                     <Route path="/setting/*" element={
                         <div id="qc_tb_settingPage" className="qc_tb_page">
                             <Sidebar user={props.user} appTheme={props.appTheme} updateTheme={props.updateTheme} />
-                            <SettingPage updateNotification={props.updateNotification} updateWarning={props.updateWarning} user={props.user} changeUser={props.changeUser} appTheme={props.appTheme} updateTheme={props.updateTheme} changeAppSetting={changeAppSetting} appColor={appColor} autoDarkmode={autoDarkmode} midnightMode={midnightMode} noteBg={noteBg} customNoteBg={customNoteBg} />
+                            <SettingPage notesLength={notesData.length} tasksLength={tasksData.length} canvasLength={canvasData.length} folderLength={folderData.length} updateNotification={props.updateNotification} updateWarning={props.updateWarning} user={props.user} changeUser={props.changeUser} appTheme={props.appTheme} updateTheme={props.updateTheme} changeAppSetting={changeAppSetting} appColor={appColor} autoDarkmode={autoDarkmode} midnightMode={midnightMode} noteBg={noteBg} customNoteBg={customNoteBg} />
                         </div>
                     }>
-                        <Route path="/setting/*:settingPage" element={<SettingPage updateNotification={props.updateNotification} updateWarning={props.updateWarning} user={props.user} changeUser={props.changeUser} appTheme={props.appTheme} updateTheme={props.updateTheme} changeAppSetting={changeAppSetting} appColor={appColor} autoDarkmode={autoDarkmode} midnightMode={midnightMode} noteBg={noteBg} customNoteBg={customNoteBg} />} />
+                        <Route path="/setting/*:settingPage" element={<SettingPage notesLength={notesData.length} tasksLength={tasksData.length} canvasLength={canvasData.length} folderLength={folderData.length} updateNotification={props.updateNotification} updateWarning={props.updateWarning} user={props.user} changeUser={props.changeUser} appTheme={props.appTheme} updateTheme={props.updateTheme} changeAppSetting={changeAppSetting} appColor={appColor} autoDarkmode={autoDarkmode} midnightMode={midnightMode} noteBg={noteBg} customNoteBg={customNoteBg} />} />
                     </Route>
 
                     <Route path="/folder" element={

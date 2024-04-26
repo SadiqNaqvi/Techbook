@@ -108,19 +108,19 @@ export default function SettingAccountSection(props) {
                         </div>
                         <div id="qc_tb_userCardFileCount">
                             <span>
-                                <span>5</span>
+                                <span>{props.notesLength}</span>
                                 <label>Notes</label>
                             </span>
                             <span>
-                                <span>5</span>
+                                <span>{props.tasksLength}</span>
                                 <label>Tasks</label>
                             </span>
                             <span>
-                                <span>5</span>
+                                <span>{props.canvasLength}</span>
                                 <label>Canvas</label>
                             </span>
                             <span>
-                                <span>5</span>
+                                <span>{props.folderLength}</span>
                                 <label>Folders</label>
                             </span>
                         </div>

@@ -11,6 +11,7 @@ import SettingAboutSection from '../Component/SettingAboutSection.jsx';
 
 export default function SettingPage(props) {
 
+    console.log(props)
     const { settingPage } = useParams();
     const navigate = useNavigate();
     const [settingHeading, setSettingHeading] = useState('');
@@ -126,7 +127,7 @@ export default function SettingPage(props) {
                                             <SettingThemeSection appTheme={props.appTheme} updateTheme={props.updateTheme} midnightMode={props.midnightMode} autoDarkmode={props.autoDarkmode} changeAppSetting={props.changeAppSetting} />
                                         } />
                                         <Route path="account" element={
-                                            <SettingAccountSection user={props.user} changeUser={props.changeUser} updateNotification={props.updateNotification} updateWarning={props.updateWarning} />
+                                            <SettingAccountSection user={props.user} notesLength={props.notesLength} tasksLength={props.tasksLength} canvasLength={props.canvasLength} folderLength={props.folderLength} changeUser={props.changeUser} updateNotification={props.updateNotification} updateWarning={props.updateWarning} />
                                         } />
                                         <Route path="feedback" element={
                                             <SettingFeedbackSection user={props.user} updateNotification={props.updateNotification} />
